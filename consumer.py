@@ -26,19 +26,26 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 
 
-for msg in consumer:
+running = True
+while running:
+    message = consumer.poll()
     
-    print("Topic Name=%s,Message=%s"%(msg.topic,msg.value))
-    sql = f"INSERT INTO transactions (user_id, product_id, value) VALUES (%s, %s, %s)"
-    val = msg.value['user_id'], msg.value['product_id'], msg.value['value'] 
-        
-    cursor.execute(sql, val)
+    for msg in consumer:
+    
+      print("Topic Name=%s,Message=%s"%(msg.topic,msg.value))
+      sql = f"INSERT INTO transactions (user_id, product_id, value) VALUES (%s, %s, %s)"
+      val = msg.value['user_id'], msg.value['product_id'], msg.value['value'] 
+          
+      cursor.execute(sql, val)
 
-    db.commit()
-
-
+      db.commit()
+      
 cursor.close()
 db.close()
 
 # Terminate the script
 sys.exit()
+
+
+
+
