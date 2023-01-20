@@ -1,3 +1,4 @@
+from re import S
 import mysql.connector
 import names
 
@@ -5,32 +6,27 @@ db = mysql.connector.connect(
     host="localhost",
     user="root",
     password="password",
-    database='test'
+    database='ecommerce'
   )
 
 cursor = db.cursor()
 
-cursor.execute("CREATE DATABASE test")
+# cursor.execute("CREATE DATABASE ecommerce")
 
-cursor.execute(f"CREATE TABLE product (ID INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), price INT)")
+cursor.execute(f"CREATE TABLE product (product_ID INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), price INT)")
 
-cursor.execute("CREATE TABLE user (ID INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(255), last_name VARCHAR(255))")
+cursor.execute("CREATE TABLE user (user_ID INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(255), last_name VARCHAR(255))")
 
-cursor.execute(f"CREATE TABLE transactions (ID INT AUTO_INCREMENT PRIMARY KEY, user_id INT, product_id INT, value INT)")
+cursor.execute(f"CREATE TABLE transactions (txn_ID INT AUTO_INCREMENT PRIMARY KEY, user_id INT, product_id INT, value INT)")
 
 pro = ['chair', 'table', 'pen', 'pencil', 'phone']
 price = 100
-ind = 0
 
-for x in range(100):
+for x in range(5):
     sql = f"INSERT INTO product (name, price) VALUES (%s, %s)"
-    val = pro[ind], price
+    val = pro[x], price
     
-    ind+=1
-    price = price + 10
-    
-    if ind == 5:
-        ind = 0
+    price = price + 100
         
     cursor.execute(sql, val)
 
@@ -46,6 +42,7 @@ for i in range(100):
     cursor.execute(sql, val)
 
     db.commit()
+
 
 
 cursor.close()

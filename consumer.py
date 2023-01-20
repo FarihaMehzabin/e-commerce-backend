@@ -16,21 +16,23 @@ topicName = 'orders'
 consumer = KafkaConsumer (topicName, group_id ='group1',bootstrap_servers =
    bootstrap_servers, value_deserializer = lambda x : loads(x.decode('utf-8'))  )
     
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="password",
-    database='test'
-  )
-
-cursor = db.cursor()
-
 
 running = True
 while running:
     message = consumer.poll()
     
-    for msg in consumer:
+    
+    
+    for msg in consumer:  
+      
+      db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="password",
+    database='ecommerce'
+  )
+      
+      cursor = db.cursor()
     
       print("Topic Name=%s,Message=%s"%(msg.topic,msg.value))
       sql = f"INSERT INTO transactions (user_id, product_id, value) VALUES (%s, %s, %s)"
@@ -40,8 +42,10 @@ while running:
 
       db.commit()
       
-cursor.close()
-db.close()
+      cursor.close()
+      db.close()
+      
+
 
 # Terminate the script
 sys.exit()
