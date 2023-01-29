@@ -10,7 +10,7 @@ cursor = db.cursor()
 # cursor.execute("CREATE DATABASE ecommerce")
 
 cursor.execute(
-    f"CREATE TABLE product (product_ID INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), price INT)"
+    f"CREATE TABLE product (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), price INT)"
 )
 
 cursor.execute(
@@ -22,23 +22,20 @@ cursor.execute(
 )
 
 cursor.execute(
-    "CREATE TABLE user (user_ID INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(255), last_name VARCHAR(255))"
+    "CREATE TABLE user (id INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(255), last_name VARCHAR(255))"
 )
 
 cursor.execute(
-    f"CREATE TABLE transactions (txn_ID INT AUTO_INCREMENT PRIMARY KEY, user_id INT, product_id INT, value INT)"
+    f"CREATE TABLE transactions (id INT AUTO_INCREMENT PRIMARY KEY, user_id INT, product_id INT, value INT)"
+)
+
+
+cursor.execute(
+    "CREATE TABLE `ecommerce`.`company` (`id` INT NOT NULL AUTO_INCREMENT,`name` VARCHAR(255) NULL,PRIMARY KEY (`id`))"
 )
 
 cursor.execute(
-    "CREATE TABLE company (company_ID INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255))"
-)
-
-cursor.execute(
-    "CREATE TABLE `ecommerce`.`company` (`company_id` INT NOT NULL AUTO_INCREMENT,`name` VARCHAR(255) NULL,PRIMARY KEY (`company_id`))"
-)
-
-cursor.execute(
-    "CREATE TABLE `ecommerce`.`Category` (`category_id` INT NOT NULL AUTO_INCREMENT,`name` VARCHAR(45) NULL, PRIMARY KEY (`category_id`))"
+    "CREATE TABLE `ecommerce`.`Category` (`id` INT NOT NULL AUTO_INCREMENT,`name` VARCHAR(45) NULL, PRIMARY KEY (`id`))"
 )
 
 cursor.execute(
@@ -50,12 +47,32 @@ cursor.execute(
 )
 
 cursor.execute(
-    "ALTER TABLE `ecommerce`.`company_user` ADD INDEX `company_id_idx` (`company_id` ASC) VISIBLE; ALTER TABLE `ecommerce`.`company_user` ADD CONSTRAINT `company_id` FOREIGN KEY (`company_id`) REFERENCES `ecommerce`.`company` (`company_id`) ON DELETE RESTRICT ON UPDATE CASCADE;"
+    "ALTER TABLE `ecommerce`.`company_user` ADD INDEX `company_id_idx` (`company_id` ASC) VISIBLE; ALTER TABLE `ecommerce`.`company_user` ADD CONSTRAINT `company_id` FOREIGN KEY (`company_id`) REFERENCES `ecommerce`.`company` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;"
 )
 
 cursor.execute(
-    "ALTER TABLE `ecommerce`.`company_user` ADD INDEX `user_id_idx` (`user_id` ASC) VISIBLE; ALTER TABLE `ecommerce`.`company_user` ADD CONSTRAINT `user_ID` FOREIGN KEY (`user_id`) REFERENCES `ecommerce`.`user` (`user_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;"
+    "ALTER TABLE `ecommerce`.`company_user` ADD INDEX `user_id_idx` (`user_id` ASC) VISIBLE; ALTER TABLE `ecommerce`.`company_user` ADD CONSTRAINT `user_ID` FOREIGN KEY (`user_id`) REFERENCES `ecommerce`.`user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;"
 )
+
+cursor.execute(
+    "ALTER TABLE `ecommerce`.`company_user` ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT AFTER `company_id`, ADD PRIMARY KEY (`id`);"
+)
+
+cursor.execute(
+    "ALTER TABLE `ecommerce`.`company_user` CHANGE COLUMN `id` `id` INT NOT NULL AUTO_INCREMENT FIRST;"
+)
+
+cursor.execute(
+    "ALTER TABLE `ecommerce`.`transactions` ADD COLUMN `txn_time` DATETIME NULL DEFAULT '2023-01-20 15:06:25' AFTER `value`;"
+)
+
+cursor.execute(
+    "ALTER TABLE `ecommerce`.`transactions` CHANGE COLUMN `value` `value` DECIMAL(13,2) NULL DEFAULT NULL ; ALTER TABLE `ecommerce`.`product` CHANGE COLUMN `price` `price` DECIMAL(13,2) NULL DEFAULT NULL ; ALTER TABLE `ecommerce`.`company_user` DROP FOREIGN KEY `company_id`;ALTER TABLE `ecommerce`.`company_user` ADD CONSTRAINT `ID` FOREIGN KEY (`company_id`) REFERENCES `ecommerce`.`company` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE; ALTER TABLE `ecommerce`.`product` CHANGE COLUMN `product_description` `product_description` NVARCHAR(255) NULL DEFAULT 'a nice product' ;"
+)
+
+cursor.execute("ALTER TABLE `ecommerce`.`product_category` ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT FIRST, CHANGE COLUMN `product_id` `product_id` INT NULL , DROP PRIMARY KEY, ADD PRIMARY KEY (`id`); ")
+
+cursor.execute("ALTER TABLE `ecommerce`.`user` ADD COLUMN `password` VARCHAR(255) NOT NULL DEFAULT 'password' AFTER `last_name`;")
 
 pro = ["chair", "table", "pen", "pencil", "phone"]
 price = 100
@@ -80,7 +97,7 @@ company = [
     "Supershieldz",
     "Hey Dude Official",
 ]
-categories = [("furniture", ), ("stationary", ), ("electronics", )]
+categories = [("furniture",), ("stationary",), ("electronics",)]
 
 # populating product table
 for x in range(5):
@@ -108,9 +125,9 @@ for i in range(100):
 # populating company table
 for i in range(len(company)):
     sql = f"INSERT INTO company (name) VALUES (%s)"
-    
-    val = company[i], 
-    
+
+    val = (company[i],)
+
     cursor.execute(sql, val)
 
     db.commit()
@@ -129,19 +146,21 @@ arr = ["1", "1", "2", "2", "3"]
 
 for i in range(5):
     sql = f"INSERT INTO product_category (product_id, category_id) VALUES (%s, %s)"
-    val = i+1, arr[i], 
+    val = (
+        i + 1,
+        arr[i],
+    )
     cursor.execute(sql, val)
 
 db.commit()
 
-#populating company_user table
+# populating company_user table
 sql = f"INSERT INTO company_user (user_id) VALUES (%s)"
-val = [("1", ),("2", ),("3", ),("4", ),("5", )]
+val = [("1",), ("2",), ("3",), ("4",), ("5",)]
 
 cursor.executemany(sql, val)
 
 db.commit()
-
 
 
 cursor.close()

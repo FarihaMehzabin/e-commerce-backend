@@ -1,6 +1,6 @@
 import traceback
-from flask import Flask
 from views import Views
+from flask import Flask, render_template, redirect, url_for, request
 
 
 
@@ -42,6 +42,7 @@ def top_10_user():
     except Exception as err:
         print(traceback.format_exc())
         print(f"{err}")
+        
 
 
 app.run(host='0.0.0.0', port=8080)
