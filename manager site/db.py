@@ -1,30 +1,62 @@
 import threading
 import mysql.connector
+from hashing import Hashing
 
 
 class Db:
-    
-  def user_login(self, uname, password):
-    db_config = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="password",
-    database='ecommerce'
-  )
-    cursor = db_config.cursor()
-    
-    print(uname, password)
-    
-    cursor.execute(f"SELECT CONCAT(first_name,' ', last_name), password FROM user WHERE CONCAT(first_name,' ', last_name) = '{uname}' AND password = '{password}'")
+    def __init__(self):
+        self.hash = Hashing()
 
-    data = cursor.fetchone()
-    
-    print(data)
-        
-    cursor.close()
-    db_config.close()
-        
-    if data is not None:
-        return True
+    def user_signup(self, fname, lname, uname, password):
+        db_config = mysql.connector.connect(
+            host="localhost", user="root", password="password", database="ecommerce"
+        )
+        cursor = db_config.cursor()
 
-    return False
+        print(uname, password)
+
+        sql = f"INSERT INTO user (username, first_name, last_name, password, salt) VALUES (%s, %s, %s, %s, %s)"
+
+        hashed_pass, salt = self.hash.hash_pass(password)
+
+        val = (uname, fname, lname, hashed_pass, salt)
+
+        cursor.execute(sql, val)
+
+        db_config.commit()
+
+        cursor.close()
+        db_config.close()
+        
+        
+        rows_inserted = cursor.rowcount
+        
+        print(rows_inserted)
+
+        if rows_inserted == 1:
+            return True
+
+        return False
+
+    def user_login(self, uname, password):
+        db_config = mysql.connector.connect(
+            host="localhost", user="root", password="password", database="ecommerce"
+        )
+        cursor = db_config.cursor()
+
+        cursor.execute(f"SELECT * FROM user WHERE username = '{uname}'")
+
+        data = cursor.fetchone()
+        
+
+        if data is not None:
+            salt = data[5]
+            
+            hash = data[4]
+            
+            return self.hash.compare_pass(password, salt, hash)
+
+        cursor.close()
+        db_config.close()
+
+        return False

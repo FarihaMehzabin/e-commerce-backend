@@ -74,6 +74,10 @@ cursor.execute("ALTER TABLE `ecommerce`.`product_category` ADD COLUMN `id` INT N
 
 cursor.execute("ALTER TABLE `ecommerce`.`user` ADD COLUMN `password` VARCHAR(255) NOT NULL DEFAULT 'password' AFTER `last_name`;")
 
+cursor.execute("ALTER TABLE `ecommerce`.`user` ADD COLUMN `username` VARCHAR(45) NOT NULL DEFAULT 'username' AFTER `id`,DROP PRIMARY KEY, ADD PRIMARY KEY (`id`, `username`); ")
+
+cursor.execute("ALTER TABLE `ecommerce`.`user` ADD COLUMN `salt` VARCHAR(45) NULL AFTER `password`;")
+
 pro = ["chair", "table", "pen", "pencil", "phone"]
 price = 100
 company = [
