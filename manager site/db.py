@@ -1,4 +1,5 @@
 import threading
+import traceback
 import mysql.connector
 from hashing import Hashing
 
@@ -8,35 +9,39 @@ class Db:
         self.hash = Hashing()
 
     def user_signup(self, fname, lname, uname, password):
-        db_config = mysql.connector.connect(
-            host="localhost", user="root", password="password", database="ecommerce"
-        )
-        cursor = db_config.cursor()
-
-        print(uname, password)
-
-        sql = f"INSERT INTO user (username, first_name, last_name, password, salt) VALUES (%s, %s, %s, %s, %s)"
-
-        hashed_pass, salt = self.hash.hash_pass(password)
-
-        val = (uname, fname, lname, hashed_pass, salt)
-
-        cursor.execute(sql, val)
-
-        db_config.commit()
-
-        cursor.close()
-        db_config.close()
         
-        
-        rows_inserted = cursor.rowcount
-        
-        print(rows_inserted)
+        try:
+            db_config = mysql.connector.connect(
+                host="localhost", user="root", password="password", database="ecommerce"
+            )
+            cursor = db_config.cursor()
 
-        if rows_inserted == 1:
-            return True
+            print(uname, password)
 
-        return False
+            sql = f"INSERT INTO user (username, first_name, last_name, password, salt) VALUES (%s, %s, %s, %s, %s)"
+
+            hashed_pass, salt = self.hash.hash_pass(password)
+
+            val = (uname, fname, lname, hashed_pass, salt)
+
+            cursor.execute(sql, val)
+
+            db_config.commit()
+
+            cursor.close()
+            db_config.close()
+            
+
+            if cursor.rowcount == 1:
+                return True
+
+            return False
+        
+        except Exception as err:
+            print(traceback.format_exc())
+            print(f"{err}")
+            
+            return False
 
     def user_login(self, uname, password):
         db_config = mysql.connector.connect(
@@ -47,7 +52,6 @@ class Db:
         cursor.execute(f"SELECT * FROM user WHERE username = '{uname}'")
 
         data = cursor.fetchone()
-        
 
         if data is not None:
             salt = data[5]
