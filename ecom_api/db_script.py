@@ -82,6 +82,10 @@ cursor.execute("ALTER TABLE `ecommerce`.`user` DROP COLUMN `username`, DROP PRIM
 
 cursor.execute("ALTER TABLE `ecommerce`.`user` ADD COLUMN `username` VARCHAR(45) NULL AFTER `id`, CHANGE COLUMN `salt` `salt` VARCHAR(255) NULL DEFAULT NULL , ADD UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE ;")
 
+cursor.execute("ALTER TABLE `ecommerce`.`company` ADD COLUMN `username` VARCHAR(45) NULL AFTER `name`,ADD COLUMN `password` VARCHAR(255) NOT NULL AFTER `username`, ADD COLUMN `salt` VARCHAR(255) NULL AFTER `password`;")
+
+
+
 pro = ["chair", "table", "pen", "pencil", "phone"]
 price = 100
 company = [

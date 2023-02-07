@@ -19,6 +19,8 @@ app = Flask(__name__)
 views = Views()
 db = Db()
 
+# Reports
+
 @app.route("/users/total_value_spent", methods=["GET"])
 def total_val_spent():
     try:
@@ -45,8 +47,10 @@ def top_10_user():
     except Exception as err:
         print(traceback.format_exc())
         print(f"{err}")
-        
-@app.route("/users/<username>/<password>", methods=['GET',"POST"])
+ 
+ 
+# Public users signup/login
+@app.route("/user_login/<username>/<password>", methods=['GET',"POST"])
 def login(username, password):
     
         user = db.user_login(username,password)
@@ -57,7 +61,7 @@ def login(username, password):
             return jsonify(message = 'Invalid Credentials. Please try again.', error = True)
             
 
-@app.route("/users/<fname>/<lname>/<username>/<password>", methods=['GET',"POST"])
+@app.route("/user_signup/<fname>/<lname>/<username>/<password>", methods=['GET',"POST"])
 def sign_up(fname, lname, username, password):
         
         user = db.user_signup(fname, lname, username, password)
@@ -67,5 +71,26 @@ def sign_up(fname, lname, username, password):
         else:
             return jsonify(message = 'Username taken. Please try again.', error = True)
         
+# company users signup/login
+@app.route("/company_signup/<cname>/<username>/<password>", methods=['GET',"POST"])
+def comp_sign_up(cname, username, password):
+        
+        user = db.comp_signup(cname, username, password)
+        
+        if user:
+            return jsonify(message = f"New user signed up! Welcome, {username} :)", error= False)
+        else:
+            return jsonify(message = 'Username taken. Please try again.', error = True)
+
+@app.route("/company_login/<username>/<password>", methods=['GET',"POST"])
+def comp_login(username, password):
+    
+        user = db.comp_login(username,password)
+        
+        if user:
+            return jsonify(message = f"Logged in! Welcome, {username} :)", error= False)
+        else:
+            return jsonify(message = 'Invalid Credentials. Please try again.', error = True)
+
 
 app.run(host='0.0.0.0', port=8080)
