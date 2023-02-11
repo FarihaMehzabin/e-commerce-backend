@@ -35,7 +35,7 @@ class cookies:
         res = data.json()
         
         if res['check'] == True:
-            return "Welcome"
+            return make_response("welcome")
         else:
             return self._set_cookie()
         

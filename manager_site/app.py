@@ -11,6 +11,10 @@ config = {
 app = Flask(__name__)
 
 cookie = cookies()
+
+@app.route('/')
+def index():
+    return "Welcome"
     
 
 @app.route("/company_user/login", methods=['GET',"POST"])
@@ -23,7 +27,10 @@ def login():
         cookie_check = cookie.check_for_cookie()
          
         if cookie_check:
-            return cookie_check #How to redirect to some other endpoint with username?
+            
+            cookie_check.headers['location'] = url_for('index')
+            
+            return cookie_check, 302 #How to redirect to some other endpoint with username?
      
         response = requests.get(f"http://127.0.0.1:8080/company_login/{request.form['u']}/{request.form['p']}")
         
@@ -48,7 +55,9 @@ def sign_up():
          
         if cookie_check:
             
-            return cookie_check
+            cookie_check.headers['location'] = url_for('index')
+            
+            return cookie_check, 302
      
         response = requests.get(f"http://127.0.0.1:8080/company_signup/{request.form['cname']}/{request.form['u']}/{request.form['p']}")
         

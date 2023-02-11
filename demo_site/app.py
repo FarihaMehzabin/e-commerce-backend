@@ -22,7 +22,9 @@ def login():
         cookie_check = cookie.check_for_cookie()
          
         if cookie_check:
-            return cookie_check #How to redirect to some other endpoint with username?
+            cookie_check.headers['location'] = url_for('index')
+            
+            return cookie_check, 302 #How to redirect to some other endpoint with username?
 
         response = requests.get(f"http://127.0.0.1:8080/user_login/{request.form['u']}/{request.form['p']}")
         
@@ -51,7 +53,9 @@ def sign_up():
         cookie_check = cookie.check_for_cookie()
          
         if cookie_check:
-            return cookie_check #How to redirect to some other endpoint with username?
+            cookie_check.headers['location'] = url_for('index')
+            
+            return cookie_check, 302 #How to redirect to some other endpoint with username?
      
         response = requests.get(f"http://127.0.0.1:8080/user_signup/{request.form['firstname']}/{request.form['lastname']}/{request.form['u']}/{request.form['p']}")
         
@@ -79,4 +83,4 @@ app.run(host='0.0.0.0', port=2520)
 
 # todo
 
-# For every signed up user, there should be a GUID to keep track
+# For every signed up user, there should be a GUID to keep track?
