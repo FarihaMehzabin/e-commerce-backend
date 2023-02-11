@@ -122,3 +122,56 @@ class Db:
         db_config.close()
 
         return False
+    
+    
+    def add_to_session(self, guid):
+        try:
+            db_config = mysql.connector.connect(
+                host="localhost", user="root", password="password", database="ecommerce"
+            )
+            cursor = db_config.cursor()
+
+            sql = f"INSERT INTO session (guid) VALUES (%s)"
+
+            val = (guid,)
+
+            cursor.execute(sql, val)
+
+            db_config.commit()
+
+            cursor.close()
+            db_config.close()
+         
+        except Exception as err:
+            print(traceback.format_exc())
+            print(f"{err}")
+            
+            return False
+        
+    
+    
+    def check_session(self, guid):
+        db = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="password",
+  database='ecommerce'
+)
+
+        cursor = db.cursor()
+
+        cursor.execute(f"SELECT guid FROM session WHERE guid = '{guid}'")
+
+        data = cursor.fetchone()
+        
+        guid = data[0]
+        
+        print(guid)
+
+        cursor.close()
+        db.close()
+        
+        if guid is not None:
+            return True
+        
+        return False

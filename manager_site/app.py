@@ -1,6 +1,7 @@
 import traceback
 from flask import Flask, render_template, redirect, url_for, request
 import requests
+from cookies import cookies
 
 config = {
     "DEBUG": True,  # some Flask specific configs
@@ -9,6 +10,8 @@ config = {
 
 app = Flask(__name__)
 
+cookie = cookies()
+    
 
 @app.route("/company_user/login", methods=['GET',"POST"])
 def login():
@@ -16,6 +19,11 @@ def login():
      error = None
     
      if request.method == 'POST':
+         
+        cookie_check = cookie.check_for_cookie()
+         
+        if cookie_check:
+            return cookie_check #How to redirect to some other endpoint with username?
      
         response = requests.get(f"http://127.0.0.1:8080/company_login/{request.form['u']}/{request.form['p']}")
         
@@ -35,6 +43,12 @@ def sign_up():
      error = None
     
      if request.method == 'POST':
+         
+        cookie_check = cookie.check_for_cookie()
+         
+        if cookie_check:
+            
+            return cookie_check
      
         response = requests.get(f"http://127.0.0.1:8080/company_signup/{request.form['cname']}/{request.form['u']}/{request.form['p']}")
         

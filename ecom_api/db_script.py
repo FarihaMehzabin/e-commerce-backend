@@ -70,21 +70,37 @@ cursor.execute(
     "ALTER TABLE `ecommerce`.`transactions` CHANGE COLUMN `value` `value` DECIMAL(13,2) NULL DEFAULT NULL ; ALTER TABLE `ecommerce`.`product` CHANGE COLUMN `price` `price` DECIMAL(13,2) NULL DEFAULT NULL ; ALTER TABLE `ecommerce`.`company_user` DROP FOREIGN KEY `company_id`;ALTER TABLE `ecommerce`.`company_user` ADD CONSTRAINT `ID` FOREIGN KEY (`company_id`) REFERENCES `ecommerce`.`company` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE; ALTER TABLE `ecommerce`.`product` CHANGE COLUMN `product_description` `product_description` NVARCHAR(255) NULL DEFAULT 'a nice product' ;"
 )
 
-cursor.execute("ALTER TABLE `ecommerce`.`product_category` ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT FIRST, CHANGE COLUMN `product_id` `product_id` INT NULL , DROP PRIMARY KEY, ADD PRIMARY KEY (`id`); ")
+cursor.execute(
+    "ALTER TABLE `ecommerce`.`product_category` ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT FIRST, CHANGE COLUMN `product_id` `product_id` INT NULL , DROP PRIMARY KEY, ADD PRIMARY KEY (`id`); "
+)
 
-cursor.execute("ALTER TABLE `ecommerce`.`user` ADD COLUMN `password` VARCHAR(255) NOT NULL DEFAULT 'password' AFTER `last_name`;")
+cursor.execute(
+    "ALTER TABLE `ecommerce`.`user` ADD COLUMN `password` VARCHAR(255) NOT NULL DEFAULT 'password' AFTER `last_name`;"
+)
 
-cursor.execute("ALTER TABLE `ecommerce`.`user` ADD COLUMN `username` VARCHAR(45) NOT NULL DEFAULT 'username' AFTER `id`,DROP PRIMARY KEY, ADD PRIMARY KEY (`id`, `username`); ")
+cursor.execute(
+    "ALTER TABLE `ecommerce`.`user` ADD COLUMN `username` VARCHAR(45) NOT NULL DEFAULT 'username' AFTER `id`,DROP PRIMARY KEY, ADD PRIMARY KEY (`id`, `username`); "
+)
 
-cursor.execute("ALTER TABLE `ecommerce`.`user` ADD COLUMN `salt` VARCHAR(45) NULL AFTER `password`;")
+cursor.execute(
+    "ALTER TABLE `ecommerce`.`user` ADD COLUMN `salt` VARCHAR(45) NULL AFTER `password`;"
+)
 
-cursor.execute("ALTER TABLE `ecommerce`.`user` DROP COLUMN `username`, DROP PRIMARY KEY, ADD PRIMARY KEY (`id`);")
+cursor.execute(
+    "ALTER TABLE `ecommerce`.`user` DROP COLUMN `username`, DROP PRIMARY KEY, ADD PRIMARY KEY (`id`);"
+)
 
-cursor.execute("ALTER TABLE `ecommerce`.`user` ADD COLUMN `username` VARCHAR(45) NULL AFTER `id`, CHANGE COLUMN `salt` `salt` VARCHAR(255) NULL DEFAULT NULL , ADD UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE ;")
+cursor.execute(
+    "ALTER TABLE `ecommerce`.`user` ADD COLUMN `username` VARCHAR(45) NULL AFTER `id`, CHANGE COLUMN `salt` `salt` VARCHAR(255) NULL DEFAULT NULL , ADD UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE ;"
+)
 
-cursor.execute("ALTER TABLE `ecommerce`.`company` ADD COLUMN `username` VARCHAR(45) NULL AFTER `name`,ADD COLUMN `password` VARCHAR(255) NOT NULL AFTER `username`, ADD COLUMN `salt` VARCHAR(255) NULL AFTER `password`;")
+cursor.execute(
+    "ALTER TABLE `ecommerce`.`company` ADD COLUMN `username` VARCHAR(45) NULL AFTER `name`,ADD COLUMN `password` VARCHAR(255) NOT NULL AFTER `username`, ADD COLUMN `salt` VARCHAR(255) NULL AFTER `password`;"
+)
 
-
+cursor.execute(
+    "CREATE TABLE `ecommerce`.`session` (`id` INT NOT NULL AUTO_INCREMENT, `guid` VARCHAR(255) NULL, PRIMARY KEY (`id`)); "
+)
 
 pro = ["chair", "table", "pen", "pencil", "phone"]
 price = 100

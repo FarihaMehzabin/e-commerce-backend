@@ -3,9 +3,11 @@ import os
 from base64 import b64encode, b64decode
 import secrets
 import string
+import mysql.connector
  
 
 class Hashing:
+  
     
     def hash_pass(self, password):
         
@@ -35,3 +37,14 @@ class Hashing:
             return True
             
         return False
+    
+    def hash_guid(self, key):
+        hashGen = hashlib.sha512()
+        hashGen.update(key.encode())
+        hash = hashGen.hexdigest()
+        
+        return hash
+        
+        
+        
+    
