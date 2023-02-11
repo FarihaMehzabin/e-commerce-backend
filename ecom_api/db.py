@@ -110,6 +110,8 @@ class Db:
         cursor.execute(f"SELECT * FROM company WHERE username = '{uname}'")
 
         data = cursor.fetchone()
+        
+        print(data)
 
         if data is not None:
             salt = data[4]

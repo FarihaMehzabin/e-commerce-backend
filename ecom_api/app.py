@@ -87,6 +87,8 @@ def comp_login(username, password):
     
         user = db.comp_login(username,password)
         
+        print(user)
+        
         if user:
             return jsonify(message = f"Logged in! Welcome, {username} :)", error= False)
         else:

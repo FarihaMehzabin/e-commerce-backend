@@ -12,6 +12,16 @@ app = Flask(__name__)
 
 cookie = cookies()
 
+@app.route('/')
+def index():
+    
+    cookie_check = cookie.check_for_cookie()
+         
+    if cookie_check:
+        return "Welcome"
+    
+    return "you're not logged in"
+
 @app.route("/users/login", methods=['GET',"POST"])
 def login():
     
@@ -24,7 +34,7 @@ def login():
         if cookie_check:
             cookie_check.headers['location'] = url_for('index')
             
-            return cookie_check, 302 #How to redirect to some other endpoint with username?
+            return cookie_check, 302 
 
         response = requests.get(f"http://127.0.0.1:8080/user_login/{request.form['u']}/{request.form['p']}")
         
@@ -32,9 +42,11 @@ def login():
         
         if res['error'] == False:
             
-            response = make_response(res['message'])
+            set_cookie = cookie.set_cookie()
             
-            return response
+            set_cookie.headers['location'] = url_for('index')
+            
+            return set_cookie, 302
             
         else:
             error = res['message']
@@ -62,7 +74,11 @@ def sign_up():
         res = response.json()
         
         if res['error'] == False:
-            return res['message']
+            set_cookie = cookie.set_cookie()
+            
+            set_cookie.headers['location'] = url_for('index')
+            
+            return set_cookie, 302
         else:
             error = res['message']
      
