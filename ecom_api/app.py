@@ -20,7 +20,7 @@ db = Db()
 hash = Hashing()
 
 # Reports
-@app.route("/users/total_value_spent", methods=["GET"])
+@app.route("/users/total-value-spent", methods=["GET"])
 def total_val_spent():
     try:
         return views.total_value_spent()
@@ -29,7 +29,7 @@ def total_val_spent():
         print(traceback.format_exc())
         print(f"{err}")
 
-@app.route("/users/top_purchased_product", methods=["GET"])
+@app.route("/users/top-purchased-product", methods=["GET"])
 def top_purchased_product():
     try:
         return views.top_purchased_product()
@@ -38,7 +38,7 @@ def top_purchased_product():
         print(traceback.format_exc())
         print(f"{err}")
 
-@app.route("/users/top_10_user", methods=["GET"])
+@app.route("/users/top-10-user", methods=["GET"])
 def top_10_user():
     try:
         return views.top_10_user()
@@ -49,7 +49,7 @@ def top_10_user():
  
  
 # Public users signup/login
-@app.route("/user_login/<username>/<password>", methods=['GET',"POST"])
+@app.route("/user-login/<username>/<password>", methods=['GET'])
 def login(username, password):
     
         user = db.user_login(username,password)
@@ -59,7 +59,7 @@ def login(username, password):
             return jsonify(message = 'Invalid Credentials. Please try again.', error = True)
             
 
-@app.route("/user_signup/<fname>/<lname>/<username>/<password>", methods=['GET',"POST"])
+@app.route("/user-signup/<fname>/<lname>/<username>/<password>", methods=['GET'])
 def sign_up(fname, lname, username, password):
         
         user = db.user_signup(fname, lname, username, password)
@@ -72,7 +72,7 @@ def sign_up(fname, lname, username, password):
 
        
 # company users signup/login
-@app.route("/company_signup/<cname>/<username>/<password>", methods=['GET',"POST"])
+@app.route("/company/user/signup/<cname>/<username>/<password>", methods=['GET'])
 def comp_sign_up(cname, username, password):
         
         user = db.comp_signup(cname, username, password)
@@ -82,7 +82,7 @@ def comp_sign_up(cname, username, password):
         else:
             return jsonify(message = 'Username taken. Please try again.', error = True)
 
-@app.route("/company_login/<username>/<password>", methods=['GET',"POST"])
+@app.route("/company/user/login/<username>/<password>", methods=['GET'])
 def comp_login(username, password):
     
         user = db.comp_login(username,password)
@@ -96,8 +96,8 @@ def comp_login(username, password):
 
 
 # Cookie setup
-@app.route("/generate_and_store_GUID")
-def generate_and_store_GUID():
+@app.route("/create-session")
+def create_session():
     
     guid_id = str(uuid.uuid4())
     
@@ -107,7 +107,7 @@ def generate_and_store_GUID():
     
     return jsonify( guid = hashed_guid )
 
-@app.route("/check_cookie_validity/<guid>", methods=['GET',"POST"])
+@app.route("/check-cookie-validity/<guid>", methods=['GET',"POST"])
 def check_cookie_validity(guid):
     try:
         is_session_valid = db.check_session(guid)

@@ -5,7 +5,7 @@ import requests
 class cookies:
     def set_cookie(self):
 
-        data = requests.get(f"http://127.0.0.1:8080/generate_and_store_GUID")
+        data = requests.get(f"http://127.0.0.1:8080/create-session")
 
         res = data.json()
 
@@ -30,9 +30,11 @@ class cookies:
             return self._check_cookie_validity(name)
 
     def _check_cookie_validity(self, guid):
-        data = requests.get(f"http://127.0.0.1:8080/check_cookie_validity/{guid}")
+        data = requests.get(f"http://127.0.0.1:8080/check-cookie-validity/{guid}")
 
         res = data.json()
+        
+        print(res)
 
         if res["check"] == True:
             return make_response("welcome")

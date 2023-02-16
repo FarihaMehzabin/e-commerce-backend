@@ -18,11 +18,12 @@ class Db:
 
             print(uname, password)
 
-            sql = f"INSERT INTO user (username, first_name, last_name, password, salt) VALUES (%s, %s, %s, %s, %s)"
+            sql = f"INSERT INTO user (username, first_name, last_name, password) VALUES (%s, %s, %s, %s)"
 
-            hashed_pass, salt = self.hash.hash_pass(password)
+            hashed_pass = self.hash.hash_pass(password)
 
-            val = (uname, fname, lname, hashed_pass, salt)
+            val = (uname, fname, lname, hashed_pass)
+            
 
             cursor.execute(sql, val)
 
@@ -54,11 +55,10 @@ class Db:
         data = cursor.fetchone()
 
         if data is not None:
-            salt = data[5]
             
             hash = data[4]
             
-            return self.hash.compare_pass(password, salt, hash)
+            return self.hash.compare_pass(password, hash)
 
         cursor.close()
         db_config.close()
@@ -76,11 +76,11 @@ class Db:
 
             print(uname, password)
 
-            sql = f"INSERT INTO company (name, username, password, salt) VALUES (%s, %s, %s, %s)"
+            sql = f"INSERT INTO company (name, username, password) VALUES (%s, %s, %s)"
 
-            hashed_pass, salt = self.hash.hash_pass(password)
+            hashed_pass = self.hash.hash_pass(password)
 
-            val = (cname, uname, hashed_pass, salt)
+            val = (cname, uname, hashed_pass)
 
             cursor.execute(sql, val)
 
@@ -114,11 +114,10 @@ class Db:
         print(data)
 
         if data is not None:
-            salt = data[4]
             
             hash = data[3]
             
-            return self.hash.compare_pass(password, salt, hash)
+            return self.hash.compare_pass(password, hash)
 
         cursor.close()
         db_config.close()

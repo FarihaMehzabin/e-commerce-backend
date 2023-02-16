@@ -25,7 +25,7 @@ def index():
     return "you're not logged in"
     
 
-@app.route("/company_user/login", methods=['GET',"POST"])
+@app.route("/company/user/login", methods=["GET", "POST"])
 def login():
     
      error = None
@@ -40,7 +40,7 @@ def login():
             
             return cookie_check, 302 
      
-        response = requests.get(f"http://127.0.0.1:8080/company_login/{request.form['u']}/{request.form['p']}")
+        response = requests.get(f"http://127.0.0.1:8080/company/user/login/{request.form['u']}/{request.form['p']}")
         
         res = response.json()
         
@@ -61,7 +61,7 @@ def login():
      return render_template('login.html', error = error)
      
 
-@app.route("/company_user/signup", methods=['GET',"POST"])
+@app.route("/company/user/signup", methods=["GET", "POST"])
 def sign_up():
     
      error = None
@@ -76,7 +76,7 @@ def sign_up():
             
             return cookie_check, 302
      
-        response = requests.get(f"http://127.0.0.1:8080/company_signup/{request.form['cname']}/{request.form['u']}/{request.form['p']}")
+        response = requests.get(f"http://127.0.0.1:8080/company/user/signup/{request.form['cname']}/{request.form['u']}/{request.form['p']}")
         
         res = response.json()
         

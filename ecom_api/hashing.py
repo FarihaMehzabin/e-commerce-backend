@@ -1,40 +1,33 @@
 import hashlib
 import os
 from base64 import b64encode, b64decode
-import secrets
-import string
-import mysql.connector
- 
+
+salt = os.urandom(32)
 
 class Hashing:
   
     
     def hash_pass(self, password):
         
-        salt = os.urandom(32)
-        
-        token = b64encode(salt).decode('utf-8')
-        
         digest = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt , 10000)
         
         hex_hash = digest.hex()
         
-        print(token)
-        
-        return hex_hash, token
+        return hex_hash
     
-    def compare_pass(self, password, salt, hash):
+    def compare_pass(self, password, hash):
         
-        token = b64decode(salt.encode())
-        
-        print(token)
-        
-        digest = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), token, 10000)
+        digest = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 10000)
         
         hex_hash = digest.hex()
         
         if hash == hex_hash:
+            
+            print("Pass match")
+            
             return True
+        
+        print("Pass dont match")
             
         return False
     

@@ -22,7 +22,7 @@ def index():
     
     return "you're not logged in"
 
-@app.route("/users/login", methods=['GET',"POST"])
+@app.route("/users/login", methods=["POST"])
 def login():
     
      error = None
@@ -36,7 +36,7 @@ def login():
             
             return cookie_check, 302 
 
-        response = requests.get(f"http://127.0.0.1:8080/user_login/{request.form['u']}/{request.form['p']}")
+        response = requests.get(f"http://127.0.0.1:8080/user-login/{request.form['u']}/{request.form['p']}")
         
         res = response.json()
         
@@ -55,7 +55,7 @@ def login():
      return render_template('login.html', error = error)
 
 
-@app.route("/users/signup", methods=['GET',"POST"])
+@app.route("/users/signup", methods=["POST"])
 def sign_up():
     
      error = None
@@ -69,7 +69,7 @@ def sign_up():
             
             return cookie_check, 302 #How to redirect to some other endpoint with username?
      
-        response = requests.get(f"http://127.0.0.1:8080/user_signup/{request.form['firstname']}/{request.form['lastname']}/{request.form['u']}/{request.form['p']}")
+        response = requests.get(f"http://127.0.0.1:8080/user-signup/{request.form['firstname']}/{request.form['lastname']}/{request.form['u']}/{request.form['p']}")
         
         res = response.json()
         
