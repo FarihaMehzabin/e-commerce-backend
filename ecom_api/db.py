@@ -23,7 +23,6 @@ class Db:
             hashed_pass = self.hash.hash_pass(password)
 
             val = (uname, fname, lname, hashed_pass)
-            
 
             cursor.execute(sql, val)
 
@@ -85,13 +84,15 @@ class Db:
             cursor.execute(sql, val)
 
             db_config.commit()
+            
+            last_inserted_id = cursor.lastrowid
 
             cursor.close()
             db_config.close()
             
 
             if cursor.rowcount == 1:
-                return True
+                return True, last_inserted_id
 
             return False
         
@@ -117,7 +118,7 @@ class Db:
             
             hash = data[3]
             
-            return self.hash.compare_pass(password, hash)
+            return self.hash.compare_pass(password, hash), data[0]
 
         cursor.close()
         db_config.close()
@@ -125,16 +126,16 @@ class Db:
         return False
     
     
-    def add_to_session(self, guid):
+    def add_to_session(self, guid, comp_id):
         try:
             db_config = mysql.connector.connect(
                 host="localhost", user="root", password="password", database="ecommerce"
             )
             cursor = db_config.cursor()
 
-            sql = f"INSERT INTO session (guid) VALUES (%s)"
+            sql = f"INSERT INTO session (guid, company_id) VALUES (%s, %s)"
 
-            val = (guid,)
+            val = (guid, comp_id)
 
             cursor.execute(sql, val)
 
@@ -161,18 +162,24 @@ class Db:
 
         cursor = db.cursor()
 
-        cursor.execute(f"SELECT guid FROM session WHERE guid = '{guid}'")
+        cursor.execute(f"SELECT guid, company_id FROM session WHERE guid = '{guid}'")
 
         data = cursor.fetchone()
         
         guid = data[0]
         
-        print(guid)
+        comp_id = data[1]
+        
+        cursor.execute(f"SELECT name FROM company WHERE id = '{comp_id}'")
+
+        res = cursor.fetchone()
+        
+        print(res)
 
         cursor.close()
         db.close()
         
         if guid is not None:
-            return True
+            return True, res[0]
         
         return False

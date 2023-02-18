@@ -12,86 +12,78 @@ app = Flask(__name__)
 
 cookie = cookies()
 
-@app.route('/')
+
+@app.route("/")
 def index():
     
-    cookie_check = cookie.check_for_cookie()
-    
-    print(cookie_check)
-         
-    if cookie_check:
-        return "Welcome"
-    
-    return "you're not logged in"
-    
+    return cookie.check_cookie()
+
+
+# check cookies --> yes? Just display the username
+# no? Let the user login --> set cookies
+# send comp_id to db when setting cookies
+
 
 @app.route("/company/user/login", methods=["GET", "POST"])
 def login():
+
+    error = None
     
-     error = None
-    
-     if request.method == 'POST':
-         
-        cookie_check = cookie.check_for_cookie()
-         
-        if cookie_check:
-            
-            cookie_check.headers['location'] = url_for('index')
-            
-            return cookie_check, 302 
-     
-        response = requests.get(f"http://127.0.0.1:8080/company/user/login/{request.form['u']}/{request.form['p']}")
-        
+    check_cookie = cookie.check_cookie_with_redirect('index')
+
+    if check_cookie is not False:
+        return check_cookie
+
+
+    if request.method == "POST":
+
+        response = requests.get(
+            f"http://127.0.0.1:8080/company/user/login/{request.form['u']}/{request.form['p']}"
+        )
+
         res = response.json()
-        
+
         print(res)
-     
-        if res['error'] == False:
-            
-            set_cookie = cookie.set_cookie()
-            
-            set_cookie.headers['location'] = url_for('index')
-            
+        
+        # no error found 
+        if res["error"] == False:
+
+            set_cookie = cookie.set_cookie(res["comp_id"])
+
+            set_cookie.headers["location"] = url_for("index")
+
             return set_cookie, 302
-            
-            
+
         else:
-            error = res['message']
-     
-     return render_template('login.html', error = error)
-     
+            error = res["message"]
+
+    return render_template("login.html", error=error)
+
 
 @app.route("/company/user/signup", methods=["GET", "POST"])
 def sign_up():
-    
-     error = None
-    
-     if request.method == 'POST':
-         
-        cookie_check = cookie.check_for_cookie()
-         
-        if cookie_check:
-            
-            cookie_check.headers['location'] = url_for('index')
-            
-            return cookie_check, 302
-     
-        response = requests.get(f"http://127.0.0.1:8080/company/user/signup/{request.form['cname']}/{request.form['u']}/{request.form['p']}")
-        
+
+    error = None
+
+    if request.method == "POST":
+
+        response = requests.get(
+            f"http://127.0.0.1:8080/company/user/signup/{request.form['cname']}/{request.form['u']}/{request.form['p']}"
+        )
+
         res = response.json()
         
-        if res['error'] == False:
-            set_cookie = cookie.set_cookie()
-            
-            set_cookie.headers['location'] = url_for('index')
-            
+        # no error message
+        if res["error"] == False:
+            set_cookie = cookie.set_cookie(res["comp_id"])
+
+            set_cookie.headers["location"] = url_for("index")
+
             return set_cookie, 302
         else:
-            error = res['message']
-     
-     return render_template('signup.html', error = error)
-    
-    
-    
+            error = res["message"]
 
-app.run(host='0.0.0.0', port=1234)
+    return render_template("signup.html", error=error)
+
+
+app.run(host="0.0.0.0", port=1234)
