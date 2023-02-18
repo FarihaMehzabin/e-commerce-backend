@@ -41,7 +41,7 @@ class cookies:
     
     def set_cookie(self, comp_id):
 
-        data = requests.get(f"http://127.0.0.1:8080/create-session/{comp_id}")
+        data = requests.get(f"http://127.0.0.1:8080/company/create-session/{comp_id}")
 
         res = data.json()
 
@@ -67,7 +67,7 @@ class cookies:
         
         guid = request.cookies.get("session")
         
-        data = requests.get(f"http://127.0.0.1:8080/check-cookie-validity/{guid}")
+        data = requests.get(f"http://127.0.0.1:8080/company/check-cookie-validity/{guid}")
 
         res = data.json()
 

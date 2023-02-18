@@ -31,17 +31,18 @@ class Db:
             cursor.close()
             db_config.close()
             
+            last_inserted_id = cursor.lastrowid
 
             if cursor.rowcount == 1:
-                return True
+                return True, last_inserted_id
 
-            return False
+            return False, 1
         
         except Exception as err:
             print(traceback.format_exc())
             print(f"{err}")
             
-            return False
+            return False, 1
 
     def user_login(self, uname, password):
         db_config = mysql.connector.connect(
@@ -57,7 +58,7 @@ class Db:
             
             hash = data[4]
             
-            return self.hash.compare_pass(password, hash)
+            return self.hash.compare_pass(password, hash), data[0]
 
         cursor.close()
         db_config.close()
@@ -126,7 +127,7 @@ class Db:
         return False
     
     
-    def add_to_session(self, guid, comp_id):
+    def add_to_session_comp(self, guid, comp_id):
         try:
             db_config = mysql.connector.connect(
                 host="localhost", user="root", password="password", database="ecommerce"
@@ -151,6 +152,30 @@ class Db:
             return False
         
     
+    def add_to_session_user(self, guid, user_id):
+        try:
+            db_config = mysql.connector.connect(
+                host="localhost", user="root", password="password", database="ecommerce"
+            )
+            cursor = db_config.cursor()
+
+            sql = f"INSERT INTO session (guid, user_id) VALUES (%s, %s)"
+
+            val = (guid, user_id)
+
+            cursor.execute(sql, val)
+
+            db_config.commit()
+
+            cursor.close()
+            db_config.close()
+         
+        except Exception as err:
+            print(traceback.format_exc())
+            print(f"{err}")
+            
+            return False
+    
     
     def check_session(self, guid):
         db = mysql.connector.connect(
@@ -162,7 +187,7 @@ class Db:
 
         cursor = db.cursor()
 
-        cursor.execute(f"SELECT guid, company_id FROM session WHERE guid = '{guid}'")
+        cursor.execute(f"SELECT guid, company_id, user_id FROM session WHERE guid = '{guid}'")
 
         data = cursor.fetchone()
         
@@ -170,16 +195,37 @@ class Db:
         
         comp_id = data[1]
         
-        cursor.execute(f"SELECT name FROM company WHERE id = '{comp_id}'")
-
-        res = cursor.fetchone()
+        user_id = data[2]
         
-        print(res)
+        if comp_id is not None:
+        
+            cursor.execute(f"SELECT name FROM company WHERE id = '{comp_id}'")
 
+            res = cursor.fetchone()
+        
+            print(res)
+            
+            cursor.close()
+            db.close()
+        
+            if guid is not None:
+                return True, res[0]
+
+        if user_id is not None:
+            cursor.execute(f"SELECT first_name, last_name FROM user WHERE id = '{user_id}'")
+
+            res = cursor.fetchone()
+        
+            print(res)
+            
+            cursor.close()
+            db.close()
+        
+            if guid is not None:
+                return True, res[0]+res[1]
+        
         cursor.close()
         db.close()
         
-        if guid is not None:
-            return True, res[0]
         
         return False

@@ -52,9 +52,9 @@ def top_10_user():
 @app.route("/user-login/<username>/<password>", methods=['GET'])
 def login(username, password):
     
-        user = db.user_login(username,password)
+        user, user_id  = db.user_login(username,password)
         if user:
-            return jsonify(message = f"Logged in! Welcome, {username} :)", error= False)
+            return jsonify(message = f"Logged in! Welcome, {username} :)", error= False, u_id = user_id)
         else:
             return jsonify(message = 'Invalid Credentials. Please try again.', error = True)
             
@@ -62,10 +62,10 @@ def login(username, password):
 @app.route("/user-signup/<fname>/<lname>/<username>/<password>", methods=['GET'])
 def sign_up(fname, lname, username, password):
         
-        user = db.user_signup(fname, lname, username, password)
+        user, user_id = db.user_signup(fname, lname, username, password)
         
         if user:
-            return jsonify(message = f"New user signed up! Welcome, {username} :)", error= False)
+            return jsonify(message = f"New user signed up! Welcome, {username} :)", error= False, u_id = user_id)
         else:
             return jsonify(message = 'Username taken. Please try again.', error = True)
 
@@ -96,23 +96,46 @@ def comp_login(username, password):
 
 
 # Cookie setup
-@app.route("/create-session/<comp_id>", methods = ["GET"])
-def create_session(comp_id):
+@app.route("/company/create-session/<comp_id>", methods = ["GET"])
+def create_session_comp(comp_id):
     
     guid_id = str(uuid.uuid4())
     
     hashed_guid = hash.hash_guid(guid_id)
     
-    db.add_to_session(hashed_guid, comp_id)
+    db.add_to_session_comp(hashed_guid, comp_id)
     
     return jsonify( guid = hashed_guid )
 
-@app.route("/check-cookie-validity/<guid>", methods=['GET',"POST"])
-def check_cookie_validity(guid):
+@app.route("/user/create-session/<user_id>", methods = ["GET"])
+def create_session_user(user_id):
+    
+    guid_id = str(uuid.uuid4())
+    
+    hashed_guid = hash.hash_guid(guid_id)
+    
+    db.add_to_session_user(hashed_guid, user_id)
+    
+    return jsonify( guid = hashed_guid )
+
+
+@app.route("/company/check-cookie-validity/<guid>", methods=['GET',"POST"])
+def check_cookie_validity_comp(guid):
     try:
         is_session_valid, company = db.check_session(guid)
         
         return jsonify(check = is_session_valid, comp = company)
+    
+    except Exception as err:
+        print(traceback.format_exc())
+        print(f"{err}")
+        
+@app.route("/user/check-cookie-validity/<guid>", methods=['GET',"POST"])
+def check_cookie_validity_user(guid):
+    try:
+        is_session_valid, u = db.check_session(guid)
+        
+        return jsonify(check = is_session_valid, user = u)
     
     except Exception as err:
         print(traceback.format_exc())
