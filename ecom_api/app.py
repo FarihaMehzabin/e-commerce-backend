@@ -122,7 +122,7 @@ def create_session_user(user_id):
 @app.route("/company/check-cookie-validity/<guid>", methods=['GET',"POST"])
 def check_cookie_validity_comp(guid):
     try:
-        is_session_valid, company = db.check_session(guid)
+        is_session_valid, company = db.check_session_comp(guid)
         
         return jsonify(check = is_session_valid, comp = company)
     
@@ -133,7 +133,7 @@ def check_cookie_validity_comp(guid):
 @app.route("/user/check-cookie-validity/<guid>", methods=['GET',"POST"])
 def check_cookie_validity_user(guid):
     try:
-        is_session_valid, u = db.check_session(guid)
+        is_session_valid, u = db.check_session_user(guid)
         
         return jsonify(check = is_session_valid, user = u)
     
