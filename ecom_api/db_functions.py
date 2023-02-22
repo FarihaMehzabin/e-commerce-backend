@@ -33,7 +33,9 @@ class DbFunctions:
 
         cursor.execute(statement)
 
-        data = cursor.fetchone()
+        data = cursor.fetchall()
+        
+        print(data)
 
         cursor.close()
         db_config.close()

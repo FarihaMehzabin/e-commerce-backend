@@ -30,7 +30,9 @@ class Db:
 
     def user_login(self, uname, password):
 
-        data = self.db.fetch(f"SELECT * FROM user WHERE username = '{uname}'")
+        res = self.db.fetch(f"SELECT * FROM user WHERE username = '{uname}'")
+
+        data = res[0]
 
         if data is not None:
 
@@ -61,8 +63,10 @@ class Db:
 
     def comp_login(self, uname, password):
 
-        data = self.db.fetch(f"SELECT * FROM company WHERE username = '{uname}'")
+        res = self.db.fetch(f"SELECT * FROM company WHERE username = '{uname}'")
 
+        data = res[0]
+        
         if data is not None:
 
             hash = data[3]
@@ -100,9 +104,11 @@ class Db:
 
     def check_session_comp(self, guid):
 
-        data = self.db.fetch(
+        res = self.db.fetch(
             f"SELECT guid, company_id FROM session WHERE guid = '{guid}'"
         )
+        
+        data = res[0]
 
         guid = data[0]
 
@@ -113,9 +119,11 @@ class Db:
         if comp_id is not None:
 
             res = self.db.fetch(f"SELECT name FROM company WHERE id = '{comp_id}'")
-
+            
+            data = res[0]
+            
             if guid is not None:
-                return True, res[0]
+                return True, data[0]
 
 
         return False, "no company"
@@ -123,9 +131,11 @@ class Db:
     
     def check_session_user(self, guid):
 
-        data = self.db.fetch(
+        res = self.db.fetch(
             f"SELECT guid, user_id FROM session WHERE guid = '{guid}'"
         )
+        
+        data = res[0]
 
         guid = data[0]
 
@@ -138,8 +148,19 @@ class Db:
             res = self.db.fetch(
                 f"SELECT first_name, last_name FROM user WHERE id = '{user_id}'"
             )
+            
+            data = res[0]
 
             if guid is not None:
-                return True, res[0] + res[1]
+                return True, data[0] + data[1]
 
-        return False
+        return False, 'No user found'
+    
+    def get_products(self):
+        data = self.db.fetch("SELECT product.name AS product_name, product.price AS price, (SELECT Category.name FROM Category WHERE Category.id = (SELECT product_category.category_id FROM product_category WHERE product_category.product_id = product.id)) AS category_name FROM product;")
+        
+        print(data)
+        
+        return data[0], data[1], data[2]
+        
+        

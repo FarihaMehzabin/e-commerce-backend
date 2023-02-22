@@ -16,7 +16,18 @@ cookie = cookies()
 @app.route("/")
 def index():
 
-    return cookie.check_cookie()
+    user_logged = cookie.check_cookie()
+    
+    products = requests.get(
+            f"http://127.0.0.1:8080/company/pull-products"
+        )
+    
+    products_json = products.json()
+    
+    print(products_json['products'])
+    
+    return render_template("home.html", data = products_json['products'], message = user_logged)
+
 
 
 @app.route("/users/login", methods=["GET", "POST"])

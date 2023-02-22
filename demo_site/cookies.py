@@ -19,7 +19,7 @@ class cookies:
 
                 return message
 
-        return "you're not logged in"
+        return " ❌ you're not logged in"
     
     
     def check_cookie_with_redirect(self, location):

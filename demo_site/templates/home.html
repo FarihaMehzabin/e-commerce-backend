@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/static/styles.css" rel="stylesheet" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+    <title>Home</title>
+</head>
+<body>  
+<h3>{{message}}</h3>
+<div class="product-container">
+{% for row in data %}
+  <div class="product-card">
+    <img
+      src="https://images.unsplash.com/photo-1602143407151-7111542de6e8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
+      alt="Product Name"
+      class="product-image"
+    />
+    <h3 class="product-name">{{row.0}}</h3>
+    <p class="product-description">{{row.2}}</p>
+    <div class="product-price">${{row.1}}</div>
+    <button class="add-to-cart-button">Add to Cart</button>
+  </div>
+{% endfor %}
+</div>
+</body>
+</html>

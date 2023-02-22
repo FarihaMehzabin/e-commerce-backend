@@ -1,3 +1,4 @@
+from email import message
 import traceback
 from flask import Flask, render_template, redirect, url_for, request
 import requests
@@ -17,11 +18,9 @@ cookie = cookies()
 def index():
     
     return cookie.check_cookie()
+    
+    return render_template("home.html", data = products_json['products'], message = user_logged)
 
-
-# check cookies --> yes? Just display the username
-# no? Let the user login --> set cookies
-# send comp_id to db when setting cookies
 
 
 @app.route("/company/user/login", methods=["GET", "POST"])

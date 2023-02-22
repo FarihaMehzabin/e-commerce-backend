@@ -19,7 +19,7 @@ views = Views()
 db = Db()
 hash = Hashing()
 
-# Reports
+# // Reports
 @app.route("/users/total-value-spent", methods=["GET"])
 def total_val_spent():
     try:
@@ -48,7 +48,7 @@ def top_10_user():
         print(f"{err}")
  
  
-# Public users signup/login
+# // Public users signup/login
 @app.route("/user-login/<username>/<password>", methods=['GET'])
 def login(username, password):
     
@@ -71,7 +71,7 @@ def sign_up(fname, lname, username, password):
 
 
        
-# company users signup/login
+# //company users signup/login
 @app.route("/company/user/signup/<cname>/<username>/<password>", methods=['GET'])
 def comp_sign_up(cname, username, password):
         
@@ -95,7 +95,7 @@ def comp_login(username, password):
             return jsonify(message = 'Invalid Credentials. Please try again.', error = True)
 
 
-# Cookie setup
+# // Cookie setup
 @app.route("/company/create-session/<comp_id>", methods = ["GET"])
 def create_session_comp(comp_id):
     
@@ -140,5 +140,19 @@ def check_cookie_validity_user(guid):
     except Exception as err:
         print(traceback.format_exc())
         print(f"{err}")
+        
+# // Pull products for company
+@app.route("/company/pull-products", methods=['GET'])
+def pull_products_for_company():
+    try:
+        products = db.get_products()
+        
+        return jsonify(products = products)
+    
+    except Exception as err:
+        print(traceback.format_exc())
+        print(f"{err}")
+
+
 
 app.run(host='0.0.0.0', port=8080)
