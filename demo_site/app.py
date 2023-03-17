@@ -87,19 +87,6 @@ def sign_up():
     return render_template("signup.html", error=error)
 
 
-# Cookie checker
-@app.route("/getcookie")
-def getcookie():
-    name = request.cookies.get("session")
-
-    print(name)
-
-    return "<h1>welcome " + name + "</h1>"
-
 
 app.run(host="0.0.0.0", port=2520)
 
-
-# todo
-
-# For every signed up user, there should be a GUID to keep track?

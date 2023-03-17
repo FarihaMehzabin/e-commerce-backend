@@ -6,6 +6,9 @@ class cookies:
     
     def check_cookie(self):
         cookie_check = self.get_cookie()
+        
+        message = ""
+        err_message = ""
 
         print(cookie_check)
 
@@ -16,10 +19,12 @@ class cookies:
             if cookie_validity:
                 
                 message = cookie_validity.data.decode('utf-8') 
+                err_message = False
+                
+            else:
+                err_message = "❌ you're not logged in"
 
-                return message
-
-        return "❌ you're not logged in"
+        return message, err_message
     
     
     def check_cookie_with_redirect(self, location):

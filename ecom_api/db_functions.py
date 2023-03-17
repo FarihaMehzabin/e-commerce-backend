@@ -3,7 +3,7 @@ import mysql.connector
 class DbFunctions:
     def insert(self, statement, values):
         db_config = mysql.connector.connect(
-                host="localhost", user="root", password="password", database="ecommerce"
+                host="localhost", user="root", password="password", database="ecommerce",
             )
         cursor = db_config.cursor()
         
@@ -41,3 +41,25 @@ class DbFunctions:
         db_config.close()
 
         return data
+    
+    def edit(self, statement):
+        db_config = mysql.connector.connect(
+            host="localhost", user="root", password="password", database="ecommerce"
+        )
+        cursor = db_config.cursor()
+
+        cursor.execute(statement)
+        
+        print(statement)
+
+        if cursor.rowcount > 0:
+            result = "updated successfully"
+        else:
+            result = "No matching record found"
+        
+        db_config.commit()
+        
+        cursor.close()
+        db_config.close()
+
+        return result

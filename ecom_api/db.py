@@ -1,14 +1,14 @@
-import threading
 import traceback
-import mysql.connector
 from hashing import Hashing
 from db_functions import DbFunctions
+from signup import SignUp
 
 
 class Db:
     def __init__(self):
         self.hash = Hashing()
         self.db = DbFunctions()
+        self.signup = SignUp()
 
     def user_signup(self, fname, lname, uname, password):
 
@@ -59,7 +59,7 @@ class Db:
             print(traceback.format_exc())
             print(f"{err}")
 
-            return False
+            return False, 1
 
     def comp_login(self, uname, password):
 
@@ -163,4 +163,5 @@ class Db:
         
         return data[0], data[1], data[2]
         
-        
+    
+    
