@@ -5,7 +5,8 @@ from models.data_table_models.return_company_signup import ReturnCompanySignupDa
 
 class CompanySignupService:
     def __init__(self):
-        pass
+        self.hash = Hashing()
+        self.db = DbFunctions()
     
     def comp_signup(self, company):
 

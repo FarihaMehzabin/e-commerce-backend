@@ -1,6 +1,6 @@
 
 
-class CreateCompanySignupDataModel:
+class CompanySignupRequestDataModel:
     def __init__(self, company, username, password):
         self.company = company
         self.username = username

@@ -42,52 +42,7 @@ class Db:
 
         return False
 
-    def comp_signup(self, cname, uname, password):
-
-        try:
-
-            hashed_pass = self.hash.hash_pass(password)
-
-            rowcount, id = self.db.insert(
-                f"INSERT INTO company (name, username, password) VALUES (%s, %s, %s)",
-                (cname, uname, hashed_pass),
-            )
-
-            return rowcount, id
-
-        except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
-
-            return False, 1
-
-    def comp_login(self, uname, password):
-
-        res = self.db.fetch(f"SELECT * FROM company WHERE username = '{uname}'")
-
-        data = res[0]
-        
-        if data is not None:
-
-            hash = data[3]
-
-            return self.hash.compare_pass(password, hash), data[0]
-
-        return False
-
-    def add_to_session_comp(self, guid, comp_id):
-        try:
-
-            self.db.insert(
-                f"INSERT INTO session (guid, company_id) VALUES (%s, %s)",
-                (guid, comp_id),
-            )
-
-        except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
-
-            return False
+    
 
     def add_to_session_user(self, guid, user_id):
         try:
@@ -101,32 +56,6 @@ class Db:
             print(f"{err}")
 
             return False
-
-    def check_session_comp(self, guid):
-
-        res = self.db.fetch(
-            f"SELECT guid, company_id FROM session WHERE guid = '{guid}'"
-        )
-        
-        data = res[0]
-
-        guid = data[0]
-
-        comp_id = data[1]
-        
-        print(f"company id: {comp_id}")
-
-        if comp_id is not None:
-
-            res = self.db.fetch(f"SELECT name FROM company WHERE id = '{comp_id}'")
-            
-            data = res[0]
-            
-            if guid is not None:
-                return True, data[0]
-
-
-        return False, "no company"
     
     
     def check_session_user(self, guid):
