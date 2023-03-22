@@ -1,7 +1,7 @@
 import traceback
-from hashing import Hashing
-from db_functions import DbFunctions
-from models.data_table_models.return_company_signup import ReturnCompanySignupDataModel
+from services.hashing import Hashing
+from services.db_functions import DbFunctions
+from models.data_table_models.company.company_signup_result import CompanySignupResultDataModel
 
 class CompanySignupService:
     def __init__(self):
@@ -19,7 +19,7 @@ class CompanySignupService:
                 (company.company, company.username, hashed_pass),
             )
         
-            response = ReturnCompanySignupDataModel(rowcount, id)
+            response = CompanySignupResultDataModel(rowcount, id)
 
             return response
         
@@ -27,4 +27,4 @@ class CompanySignupService:
             print(traceback.format_exc())
             print(f"{err}")
 
-            return ReturnCompanySignupDataModel(False, 1)
+            return CompanySignupResultDataModel(False, 1)

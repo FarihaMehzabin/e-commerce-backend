@@ -3,7 +3,6 @@ import os
 from base64 import b64encode, b64decode
 
 
-
 class Hashing:
   
     salt = os.urandom(32)

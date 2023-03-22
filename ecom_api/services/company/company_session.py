@@ -1,7 +1,7 @@
 import uuid, traceback
-from hashing import Hashing
-from models.data_table_models.create_company_session_result import CreateCompanySessionResultDataModel
-from models.data_table_models.check_company_session_result import CheckCompanySessionResultDataModel
+from services.hashing import Hashing
+from models.data_table_models.company.create_company_session_result import CreateCompanySessionResultDataModel
+from models.data_table_models.company.check_company_session_result import CheckCompanySessionResultDataModel
 
 
 class CompanySessionService:

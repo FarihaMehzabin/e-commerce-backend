@@ -1,8 +1,6 @@
-from db_functions import DbFunctions
+
 
 class Category:
-    def __init__(self):
-        self.db = DbFunctions()
         
     def category_list(self):
         

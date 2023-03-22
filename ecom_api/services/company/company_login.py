@@ -1,7 +1,7 @@
 import traceback
-from hashing import Hashing
-from db_functions import DbFunctions
-from models.data_table_models.return_company_login import ReturnCompanyLoginDataModel
+from services.hashing import Hashing
+from services.db_functions import DbFunctions
+from models.data_table_models.company.company_login_result import CompanyLoginResultDataModel
 
 
 class CompanyLoginService:
@@ -20,10 +20,10 @@ class CompanyLoginService:
 
             hash = data[3]
             
-            response = ReturnCompanyLoginDataModel(self.hash.compare_pass(company.password, hash), data[0])
+            response = CompanyLoginResultDataModel(self.hash.compare_pass(company.password, hash), data[0])
 
             return response
 
-        return ReturnCompanyLoginDataModel(False, 1)
+        return CompanyLoginResultDataModel(False, 1)
     
     
