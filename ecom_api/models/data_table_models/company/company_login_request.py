@@ -15,6 +15,7 @@ class CompanyLoginRequestDataModel:
 
             if not self.password or not isinstance(self.password, str) or len(self.password) < 8:
                 raise ValueError("Invalid password. Password must be at least 8 characters.")
+            
         except ValueError as e:
             self.error_message = str(e)
             self.status_code = 400

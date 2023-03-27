@@ -1,4 +1,5 @@
 import traceback
+from db.company_db import CompanyDB
 from services.hashing import Hashing
 from services.db_functions import DbFunctions
 from models.data_table_models.company.company_signup_result import CompanySignupResultDataModel
@@ -6,20 +7,20 @@ from models.data_table_models.company.company_signup_result import CompanySignup
 class CompanySignupService:
     def __init__(self):
         self.hash = Hashing()
-        self.db = DbFunctions()
+        self.company_db = CompanyDB()
     
     def comp_signup(self, company):
 
         try:
 
-            hashed_pass = self.hash.hash_pass(company.password)
-
-            rowcount, id = self.db.insert(
-                f"INSERT INTO company (name, username, password) VALUES (%s, %s, %s)",
-                (company.company, company.username, hashed_pass),
-            )
+            rowcount, id = self.company_db.create_company_user(company)
+            
+            if rowcount:
         
-            response = CompanySignupResultDataModel(rowcount, f"New user signed up! Welcome :) {company.username}", False , id)
+                response = CompanySignupResultDataModel(rowcount, f"New user signed up! Welcome :) {company.username}", False , id)
+            else:
+                
+                response = CompanySignupResultDataModel(False, "Username taken. Please try again.", True)
 
             return response
         
@@ -27,4 +28,4 @@ class CompanySignupService:
             print(traceback.format_exc())
             print(f"{err}")
 
-            return CompanySignupResultDataModel(False, "Username taken. Please try again.", True)
+            

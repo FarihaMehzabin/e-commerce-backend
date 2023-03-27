@@ -1,20 +1,19 @@
 import traceback
+from db.company_db import CompanyDB
 from services.hashing import Hashing
-from services.db_functions import DbFunctions
+
 from models.data_table_models.company.company_login_result import CompanyLoginResultDataModel
 
 
 class CompanyLoginService:
     def __init__(self):
         self.hash = Hashing()
-        self.db = DbFunctions()
+        self.company_db = CompanyDB()
     
     
     def comp_login(self, company):
 
-        res = self.db.fetch(f"SELECT * FROM company WHERE username = '{company.username}'")
-
-        data = res[0]
+        data = self.company_db.get_user_by_username(company.username)
         
         if data is not None:
 
