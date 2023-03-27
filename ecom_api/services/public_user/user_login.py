@@ -11,7 +11,7 @@ class UserLoginService:
     
     def user_login(self, user):
 
-        res = self.db.fetch(f"SELECT * FROM user WHERE username = '{user.uname}'")
+        res = self.db.fetch(f"SELECT * FROM user WHERE username = '{user.username}'")
 
         data = res[0]
 
@@ -19,9 +19,8 @@ class UserLoginService:
 
             hash = data[4]
             
-            
-            response = UserLoginResultDataModel(self.hash.compare_pass(user.password, hash), data[0])
+            response = UserLoginResultDataModel(self.hash.compare_pass(user.password, hash),f"Logged in! Welcome :) {user.username}", False, data[0])
 
             return response
 
-        return UserLoginResultDataModel(False, 1)
+        return UserLoginResultDataModel(False,"Invalid Credentials. Please try again.", True,)

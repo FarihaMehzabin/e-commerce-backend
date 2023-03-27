@@ -20,10 +20,10 @@ class CompanyLoginService:
 
             hash = data[3]
             
-            response = CompanyLoginResultDataModel(self.hash.compare_pass(company.password, hash), data[0])
+            response = CompanyLoginResultDataModel(self.hash.compare_pass(company.password, hash), f"Logged in! Welcome :) {company.username}", False,data[0])
 
             return response
 
-        return CompanyLoginResultDataModel(False, 1)
+        return CompanyLoginResultDataModel(False, "Invalid Credentials. Please try again.", True, 1)
     
     

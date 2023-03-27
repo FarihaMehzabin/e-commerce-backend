@@ -1,7 +1,14 @@
 class UserLoginResponseModel:
-    def __init__(self, message, error, user_id):
-        self.message = message
-        self.error = error
-        self.user_id = user_id
+    def __init__(self, user):
+        self.message = user.message
+        self.error = user.error
+        self.user_id = user.user_id
+        
+    def to_dict(self):
+        return{
+            "message": self.message,
+            "error": self.error,
+            "user_id": self.user_id
+        }
     
     

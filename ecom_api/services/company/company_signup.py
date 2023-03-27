@@ -19,7 +19,7 @@ class CompanySignupService:
                 (company.company, company.username, hashed_pass),
             )
         
-            response = CompanySignupResultDataModel(rowcount, id)
+            response = CompanySignupResultDataModel(rowcount, f"New user signed up! Welcome :) {company.username}", False , id)
 
             return response
         
@@ -27,4 +27,4 @@ class CompanySignupService:
             print(traceback.format_exc())
             print(f"{err}")
 
-            return CompanySignupResultDataModel(False, 1)
+            return CompanySignupResultDataModel(False, "Username taken. Please try again.", True)

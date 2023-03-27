@@ -17,13 +17,19 @@ class UserSignupService:
                 f"INSERT INTO user (username, first_name, last_name, password) VALUES (%s, %s, %s, %s)",
                 (user.username, user.first_name, user.last_name, hashed_pass),
             )
+            
+            if rowcount:
 
-            response = UserSignupResultDataModel(rowcount, id)
+                response = UserSignupResultDataModel(rowcount, f"New user signed up! Welcome :)", False,id)
+            
+                print(response.error)
+            
+            else:
+                response = UserSignupResultDataModel(False, "Username taken. Please try again.", True)
+
 
             return response
         
         except Exception as err:
             print(traceback.format_exc())
             print(f"{err}")
-
-            return UserSignupResultDataModel(False, 1)
