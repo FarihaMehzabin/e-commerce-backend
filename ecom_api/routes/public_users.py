@@ -32,6 +32,10 @@ def public_users_routes(app):
     def login():
 
         user_data = UserLoginRequestDataModel(request.get_json())
+        
+        # validation
+        if user_data.status_code == 400:
+            return user_data.error_message
 
         login_response = login_service.user_login(user_data)
         
@@ -44,6 +48,10 @@ def public_users_routes(app):
     def sign_up():
 
         user_data = UserSignupRequestDataModel(request.get_json())
+        
+        # validation
+        if user_data.status_code == 400:
+            return user_data.error_message
 
         signup_response = signup_service.user_signup(user_data)
 

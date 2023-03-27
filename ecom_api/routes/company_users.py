@@ -35,6 +35,9 @@ def company_users_routes(app):
     def comp_sign_up():
 
         company_data = CompanySignupRequestDataModel(request.get_json())
+        
+        if company_data.status_code == 400:
+            return company_data.error_message
 
         signup_response = signup_service.comp_signup(company_data)
 
@@ -46,6 +49,9 @@ def company_users_routes(app):
     def comp_login():
 
         company_data = CompanyLoginRequestDataModel(request.get_json())
+        
+        if company_data.status_code == 400:
+            return company_data.error_message
 
         login_response = login_service.comp_login(company_data)
 
