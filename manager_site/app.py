@@ -1,6 +1,7 @@
 from email import message
 import traceback
 from unicodedata import category
+from services.cookies import Cookies
 from flask import Flask, render_template, redirect, url_for, request, jsonify
 from routes.signup_login import signup_login_routes
 from routes.category import category_routes
@@ -16,8 +17,7 @@ app = Flask(__name__)
 signup_login_routes(app)
 category_routes(app)
 
-cookie = cookies()
-signup_service = SignupService()
+cookie = Cookies()
 
 
 

@@ -15,7 +15,7 @@
   <body>
     <div class="login">
       <h1>Sign Up</h1>
-      <form method="post">
+      <form method="post" action="{{ url_for('signup_submit') }}">
         <input
           type="text"
           name="cname"

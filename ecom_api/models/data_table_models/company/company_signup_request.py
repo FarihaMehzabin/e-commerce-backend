@@ -1,4 +1,4 @@
-
+from flask_api import status
 
 class CompanySignupRequestDataModel:
     def __init__(self, user):
@@ -17,13 +17,13 @@ class CompanySignupRequestDataModel:
             if not self.password or not isinstance(self.password, str) or len(self.password) < 8:
                 raise ValueError("Invalid password. Password must be at least 8 characters.")
             
-            if not self.first_name or not isinstance(self.company, str) or len(self.company) < 1:
+            if not self.company or not isinstance(self.company, str) or len(self.company) < 1:
                 raise ValueError("Invalid company name.")
             
             
         except ValueError as e:
             self.error_message = str(e)
-            self.status_code = 400
+            self.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         
     
     

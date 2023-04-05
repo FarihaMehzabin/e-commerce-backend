@@ -13,7 +13,7 @@ class CompanyLoginService:
     
     def comp_login(self, company):
 
-        data = self.company_db.get_user_by_username(company.username)
+        data = self.company_db.get_company_by_username(company.username)
         
         if data is not None:
 

@@ -1,17 +1,13 @@
 import traceback
 from flask import request, jsonify
-from db import Db
 from categories import Category
 
 
-db = Db()
 category = Category()
 
 
 def categories_routes(app): 
-    # add a new category to category table
-    # data sent to db: category name
-    # data received from db: category_id
+    
     @app.route("/company/add-category/<category_name>", methods=['GET'])
     def add_category(category_name):
         try:

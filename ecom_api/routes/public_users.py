@@ -28,55 +28,68 @@ login_service = UserLoginService()
 
 def public_users_routes(app):
 
+
     @app.route("/user-login", methods=["POST"])
     def login():
+        try:    
+            user_data = UserLoginRequestDataModel(request.get_json())
+            
+            # validation
+            if user_data.status_code == 400:
+                return user_data.error_message
 
-        user_data = UserLoginRequestDataModel(request.get_json())
+            login_response = login_service.user_login(user_data)
+            
+            response_data = UserLoginResponseModel(login_response)
+
+            return jsonify(response_data.to_dict())
         
-        # validation
-        if user_data.status_code == 400:
-            return user_data.error_message
-
-        login_response = login_service.user_login(user_data)
-        
-        response_data = UserLoginResponseModel(login_response)
-
-        return jsonify(response_data.to_dict())
+        except Exception as err:
+                print(traceback.format_exc())
+                print(f"{err}")
 
     
     @app.route("/user-signup", methods=["POST"])
     def sign_up():
+        try:
+            user_data = UserSignupRequestDataModel(request.get_json())
 
-        user_data = UserSignupRequestDataModel(request.get_json())
-        
-        # validation
-        if user_data.status_code == 400:
-            return user_data.error_message
+            # validation
+            if user_data.status_code == 400:
+                return user_data.error_message
 
-        signup_response = signup_service.user_signup(user_data)
+            signup_response = signup_service.user_signup(user_data)
 
-        response_data = UserSignupResponseModel(signup_response)
-       
-        return jsonify(response_data.to_dict())
+            response_data = UserSignupResponseModel(signup_response)
 
-    
-    @app.route("/user/create-session/<user_id>", methods=["GET","POST"])
+            return jsonify(response_data.to_dict())
+
+        except Exception as err:
+            print(traceback.format_exc())
+            print(f"{err}")
+
+
+    @app.route("/user/create-session/<user_id>", methods=["POST"])
     def create_session_user(user_id):
+        try:
+            response = UserSessionService.create_session(user_id)
 
-        response = UserSessionService.create_session(user_id)
+            return CreateUserSessionResponseModel(response.guid)
 
-        return CreateUserSessionResponseModel(response.guid)
+        except Exception as err:
+            print(traceback.format_exc())
+            print(f"{err}")
 
-    
-    @app.route("/user/check-cookie-validity/<guid>", methods=["GET", "POST"])
+
+    @app.route("/user/check-cookie-validity/<guid>", methods=["POST"])
     def check_cookie_validity_user(guid):
-
         try:
             response = UserSessionService.check_session_user(guid)
 
             return CheckUserSessionResponseModel(
                 response.session_valid, response.username
             )
+
         except Exception as err:
             print(traceback.format_exc())
             print(f"{err}")

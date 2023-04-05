@@ -12,7 +12,7 @@ class CompanySessionService:
     def create_session(self, comp_id):
         guid_id = str(uuid.uuid4())
         
-        hashed_guid = hash.hash_guid(guid_id)
+        hashed_guid = self.hash.hash_guid(guid_id)
         
         if self.company_session_db.create_session(hashed_guid, comp_id): 
             response = CreateCompanySessionResultDataModel(hashed_guid)
@@ -26,8 +26,6 @@ class CompanySessionService:
         data = self.company_session_db.get_session_by_guid(guid)
 
         if data:
-            data = res[0]
-
             comp_id = data[1]
             
             print(f"company id: {comp_id}")
@@ -38,7 +36,7 @@ class CompanySessionService:
                 
                 data = res[0]
                 
-                response = CheckCompanySessionResultDataModel(True, data[0])
+                response = CheckCompanySessionResultDataModel(True, data)
                     
                 return response
 

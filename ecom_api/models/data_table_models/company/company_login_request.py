@@ -1,4 +1,4 @@
-
+from flask_api import status
 
 class CompanyLoginRequestDataModel:
     def __init__(self, user):
@@ -18,4 +18,4 @@ class CompanyLoginRequestDataModel:
             
         except ValueError as e:
             self.error_message = str(e)
-            self.status_code = 400
+            self.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR

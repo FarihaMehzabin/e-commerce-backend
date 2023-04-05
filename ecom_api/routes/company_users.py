@@ -1,5 +1,6 @@
 import traceback
 from flask import request, jsonify
+from flask_api import status
 
 
 # Import request data models
@@ -33,45 +34,66 @@ login_service = CompanyLoginService()
 def company_users_routes(app):
     @app.route("/company/user/signup", methods=["POST"])
     def comp_sign_up():
+        try:
+            company_data = CompanySignupRequestDataModel(request.get_json())
 
-        company_data = CompanySignupRequestDataModel(request.get_json())
-        
-        if company_data.status_code == 400:
-            return company_data.error_message
+            if company_data.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR:
+                return jsonify(error = company_data.error_message)
 
-        signup_response = signup_service.comp_signup(company_data)
+            signup_response = signup_service.comp_signup(company_data)
 
-        response_data = CompanySignupResponseModel(signup_response)
+            response_data = CompanySignupResponseModel(signup_response)
 
-        return jsonify(response_data.to_dict())
+            return jsonify(response_data.to_dict())
+
+        except Exception as err:
+            print(traceback.format_exc())
+            print(f"{err}")
+
 
     @app.route("/company/user/login", methods=["POST"])
     def comp_login():
+        try:
+            company_data = CompanyLoginRequestDataModel(request.get_json())
 
-        company_data = CompanyLoginRequestDataModel(request.get_json())
-        
-        if company_data.status_code == 400:
-            return company_data.error_message
+            if company_data.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR:
+                return jsonify(error = company_data.error_message)
 
-        login_response = login_service.comp_login(company_data)
+            login_response = login_service.comp_login(company_data)
 
-        response_data = CompanyLoginResponseModel(login_response)
+            response_data = CompanyLoginResponseModel(login_response)
 
-        return jsonify(response_data.to_dict())
+            return jsonify(response_data.to_dict())
+
+        except Exception as err:
+            print(traceback.format_exc())
+            print(f"{err}")
+
 
     @app.route("/company/create-session/<comp_id>", methods=["POST"])
     def create_session_comp(comp_id):
+        try:
+            
+            company_service = CompanySessionService()
+            
+            response = company_service.create_session(comp_id)
 
-        response = CompanySessionService.create_session(comp_id)
+            response_data = CreateCompanySessionResponseModel(response.guid)
 
-        response_data = CreateCompanySessionResponseModel(response.guid)
+            return jsonify(response_data.to_dict())
 
-        return jsonify(response_data.to_dict())
+        except Exception as err:
+            print(traceback.format_exc())
+            print(f"{err}")
+
 
     @app.route("/company/check-cookie-validity/<guid>", methods=["POST"])
     def check_cookie_validity_comp(guid):
         try:
-            response = CompanySessionService.check_session_comp(guid)
+            
+            company_service = CompanySessionService()
+            
+            response = company_service.check_session_comp(guid)
 
             response_data = CheckCompanySessionResponseModel(
                 response.session_valid, response.company_name
@@ -82,3 +104,4 @@ def company_users_routes(app):
         except Exception as err:
             print(traceback.format_exc())
             print(f"{err}")
+

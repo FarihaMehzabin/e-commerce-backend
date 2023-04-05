@@ -11,7 +11,7 @@
 <body>  
   <div class="login">
     <h1>Company Login</h1>
-      <form method="post">
+      <form method="post" action="/company/user/login/submit">
         <input type="text" name="u" placeholder="Username" required="required" value="{{
           request.form.username }}" />
           <input type="password" name="p" placeholder="Password" required="required" value="{{
