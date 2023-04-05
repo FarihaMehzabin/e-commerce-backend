@@ -1,5 +1,6 @@
 import traceback
 from flask import jsonify
+from db.product_db import ProductDB
 
 
 
@@ -8,7 +9,9 @@ def products_routes(app):
     @app.route("/company/pull-products", methods=['GET'])
     def pull_products_for_company():
         try:
-            products = 0
+            
+            product_db = ProductDB()
+            products = product_db.get_products()
             
             return jsonify(products = products)
         

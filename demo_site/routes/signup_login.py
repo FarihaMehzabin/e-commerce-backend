@@ -21,7 +21,7 @@ login_service = LoginService()
 
 
 def signup_login_routes(app):
-    @app.route("/company/user/login", methods=["GET"])
+    @app.route("/users/login", methods=["GET"])
     def show_login_page():
         try:
             error = None
@@ -33,8 +33,8 @@ def signup_login_routes(app):
             print(traceback.format_exc())
             return render_template("error.html", error=str(e))
 
-    @app.route("/company/user/login/submit", methods=["POST"])
-    def process_login():
+    @app.route("/users/login", methods=["POST"])
+    def login():
         try:
             user_login = LoginPostModel(request.form["u"], request.form["p"])
             res = login_service.user_login(user_login)
@@ -48,19 +48,23 @@ def signup_login_routes(app):
             print(traceback.format_exc())
             return render_template("error.html", error=str(e))
 
-    @app.route("/company/user/signup", methods=["GET"])
-    def sign_up():
+    @app.route("/users/signup", methods=["GET"])
+    def show_signup_page():
         try:
-            return render_template("signup.html", error=None)
+            error = None
+            return render_template("signup.html", error=error)
         except Exception as e:
             print(traceback.format_exc())
             return render_template("error.html", error=str(e))
 
-    @app.route("/company/user/signup-submit", methods=["POST"])
-    def signup_submit():
+    @app.route("/users/signup", methods=["POST"])
+    def sign_up():
         try:
             user_signup_data = SignupPostModel(
-                request.form["cname"], request.form["u"], request.form["p"]
+                request.form["firstname"],
+                request.form["lastname"],
+                request.form["u"],
+                request.form["p"],
             )
             res = signup_service.create_user(user_signup_data)
 

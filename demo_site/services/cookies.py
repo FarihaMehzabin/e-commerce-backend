@@ -2,12 +2,13 @@ from flask import request, make_response, render_template, url_for
 import requests
 
 
-class cookies:
+class Cookies:
     
     def check_cookie(self):
         cookie_check = self.get_cookie()
-
-        print(cookie_check)
+        
+        message = ""
+        err_message = ""
 
         if cookie_check:
             
@@ -16,32 +17,17 @@ class cookies:
             if cookie_validity:
                 
                 message = cookie_validity.data.decode('utf-8') 
+                err_message = True
+                
+            else:
+                err_message = False
 
-                return message
-
-        return " ❌ you're not logged in"
+        return message, err_message
     
-    
-    def check_cookie_with_redirect(self, location):
-        cookie_check = self.get_cookie()
-
-        if cookie_check:
-            
-            cookie_validity = self.check_cookie_validity()
-            
-            if cookie_validity:
-
-                cookie_validity.headers["location"] = url_for(location)
-
-                return cookie_validity, 302
-            
-            return False
-        
-        return False
     
     def set_cookie(self, user_id):
 
-        data = requests.get(f"http://127.0.0.1:8080/user/create-session/{user_id}")
+        data = requests.post(f"http://127.0.0.1:8080/user/create-session/{user_id}")
 
         res = data.json()
 
@@ -67,13 +53,20 @@ class cookies:
         
         guid = request.cookies.get("session")
         
-        data = requests.get(f"http://127.0.0.1:8080/user/check-cookie-validity/{guid}")
+        data = requests.post(f"http://127.0.0.1:8080/user/check-cookie-validity/{guid}")
 
         res = data.json()
 
         print(res)
 
-        if res["check"] == True:
-            return make_response(f"welcome {res['user']}")
+        if res["session_validity"] == True:
+            return make_response(f"welcome {res['username']}")
         else:
             return False
+        
+    def return_cookie(self, user_data):
+        set_cookie = self.set_cookie(user_data.user_id)
+
+        set_cookie.headers["location"] = url_for("index")
+
+        return set_cookie, 302

@@ -1,4 +1,4 @@
-
+from flask_api import status
 class UserSignupRequestDataModel:
     def __init__(self, user):
         self.username = user["username"]
@@ -24,4 +24,4 @@ class UserSignupRequestDataModel:
                 raise ValueError("Invalid last name.")
         except ValueError as e:
             self.error_message = str(e)
-            self.status_code = 400
+            self.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
