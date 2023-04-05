@@ -1,5 +1,5 @@
 import traceback
-from flask import request, jsonify, json, render_template, url_for
+from flask import request, jsonify, json, render_template, url_for, make_response, redirect
 import requests
 from services.cookies import Cookies
 from models.post_data_models.signup import SignupPostModel
@@ -10,7 +10,7 @@ from services.signup import SignupService
 from services.login import LoginService
 
 
-cookie = Cookies()
+cookie_service = Cookies()
 
 signup_service = SignupService()
 login_service = LoginService()
@@ -21,20 +21,17 @@ def signup_login_routes(app):
     @app.route("/company/user/login", methods=["GET"])
     def show_login_page():
         error = None
-        check_cookie = cookie.check_cookie_with_redirect('index')
-
-        if check_cookie is not False:
-            return check_cookie
+        
+        cookie_validity, is_cookie_valid = cookie_service.check_cookie()
+        
+        if is_cookie_valid:
+            return redirect(url_for("index"))
 
         return render_template("login.html", error=error)
 
+    
     @app.route("/company/user/login/submit", methods=["POST"])
     def process_login():
-        
-        check_cookie = cookie.check_cookie_with_redirect('index')
-
-        if check_cookie is not False:
-            return check_cookie
 
         user_login = LoginPostModel(request.form['u'], request.form['p'])
         
@@ -45,9 +42,8 @@ def signup_login_routes(app):
 
         login_response_data = LoginResponseModel(res)
         
-        return cookie.return_cookie(login_response_data)
-
-
+        return cookie_service.return_cookie(login_response_data)
+    
 
     @app.route("/company/user/signup", methods=["GET"])
     def sign_up():
@@ -65,4 +61,4 @@ def signup_login_routes(app):
 
         signup_response_data = SignupResponseModel(res)
         
-        return cookie.return_cookie(signup_response_data)
+        return cookie_service.return_cookie(signup_response_data)
