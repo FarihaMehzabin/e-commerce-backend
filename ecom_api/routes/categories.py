@@ -1,6 +1,6 @@
 import traceback
 from flask import request, jsonify
-from categories import Category
+from ecom_api.categories import Category
 
 
 category = Category()

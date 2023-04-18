@@ -2,11 +2,11 @@ from flask_api import status
 
 class CompanySignupRequestDataModel:
     def __init__(self, user):
-        self.company = user["company_name"]
-        self.username = user["username"]
-        self.password = user["password"]
+        self.company = user.get("company_name")
+        self.username = user.get("username")
+        self.password = user.get("password")
         self.error_message = None
-        self.status_code = 200
+        self.status_code = status.HTTP_200_OK
         self.validate()
 
     def validate(self):
@@ -23,7 +23,7 @@ class CompanySignupRequestDataModel:
             
         except ValueError as e:
             self.error_message = str(e)
-            self.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+            self.status_code = status.HTTP_400_BAD_REQUEST
         
     
     

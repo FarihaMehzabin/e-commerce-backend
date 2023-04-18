@@ -1,8 +1,8 @@
 import uuid, traceback
-from services.hashing import Hashing
-from models.data_table_models.public_user.create_user_session_result import CreateUserSessionResultDataModel
-from models.data_table_models.public_user.check_user_session_result import CheckUserSessionResultDataModel
-from db.user_session_db import UserSessionDB
+from ecom_api.services.hashing import Hashing
+from ecom_api.models.data_table_models.public_user.create_user_session_result import CreateUserSessionResultDataModel
+from ecom_api.models.data_table_models.public_user.check_user_session_result import CheckUserSessionResultDataModel
+from ecom_api.db.user_session_db import UserSessionDB
 
 class UserSessionService:
     def __init__(self):

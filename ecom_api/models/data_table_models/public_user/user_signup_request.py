@@ -1,12 +1,12 @@
 from flask_api import status
 class UserSignupRequestDataModel:
     def __init__(self, user):
-        self.username = user["username"]
-        self.password = user["password"]
-        self.first_name = user["first_name"]
-        self.last_name = user["last_name"]
+        self.username = user.get("username")
+        self.password = user.get("password")
+        self.first_name = user.get("first_name")
+        self.last_name = user.get("last_name")
         self.error_message = None
-        self.status_code = 200
+        self.status_code = status.HTTP_200_OK
         self.validate()
 
     def validate(self):
@@ -24,4 +24,4 @@ class UserSignupRequestDataModel:
                 raise ValueError("Invalid last name.")
         except ValueError as e:
             self.error_message = str(e)
-            self.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+            self.status_code = status.HTTP_400_BAD_REQUEST

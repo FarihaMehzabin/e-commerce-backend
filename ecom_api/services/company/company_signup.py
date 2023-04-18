@@ -1,8 +1,8 @@
 import traceback
-from db.company_db import CompanyDB
-from services.hashing import Hashing
-from services.db_functions import DbFunctions
-from models.data_table_models.company.company_signup_result import CompanySignupResultDataModel
+from ecom_api.db.company_db import CompanyDB
+from ecom_api.services.hashing import Hashing
+from ecom_api.services.db_functions import DbFunctions
+from ecom_api.models.data_table_models.company.company_signup_result import CompanySignupResultDataModel
 
 class CompanySignupService:
     def __init__(self):

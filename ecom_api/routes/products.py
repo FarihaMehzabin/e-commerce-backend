@@ -1,6 +1,6 @@
 import traceback
 from flask import jsonify
-from db.product_db import ProductDB
+from ecom_api.db.product_db import ProductDB
 
 
 

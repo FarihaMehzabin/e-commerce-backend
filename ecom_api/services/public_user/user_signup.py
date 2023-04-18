@@ -1,7 +1,7 @@
 import traceback
-from services.db_functions import DbFunctions
-from db.user_db import UserDB
-from models.data_table_models.public_user.user_signup_result import UserSignupResultDataModel
+from ecom_api.services.db_functions import DbFunctions
+from ecom_api.db.user_db import UserDB
+from ecom_api.models.data_table_models.public_user.user_signup_result import UserSignupResultDataModel
 
 class UserSignupService:
     def __init__(self):

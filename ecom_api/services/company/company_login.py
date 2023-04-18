@@ -1,8 +1,8 @@
 import traceback
-from db.company_db import CompanyDB
-from services.hashing import Hashing
+from ecom_api.db.company_db import CompanyDB
+from ecom_api.services.hashing import Hashing
 
-from models.data_table_models.company.company_login_result import CompanyLoginResultDataModel
+from ecom_api.models.data_table_models.company.company_login_result import CompanyLoginResultDataModel
 
 
 class CompanyLoginService:

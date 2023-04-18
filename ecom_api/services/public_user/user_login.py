@@ -1,8 +1,8 @@
-from services.hashing import Hashing
-from models.data_table_models.public_user.user_login_result import (
+from ecom_api.services.hashing import Hashing
+from ecom_api.models.data_table_models.public_user.user_login_result import (
     UserLoginResultDataModel,
 )
-from db.user_db import UserDB
+from ecom_api.db.user_db import UserDB
 
 
 class UserLoginService:
