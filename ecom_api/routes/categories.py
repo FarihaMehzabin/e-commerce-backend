@@ -1,66 +1,110 @@
 import traceback
 from flask import request, jsonify
-from ecom_api.categories import Category
+from ecom_api.services.company.categories import CategoryService
 
-
-category = Category()
-
+category_service = CategoryService()
 
 def categories_routes(app): 
     
-    @app.route("/company/add-category/<category_name>", methods=['GET'])
-    def add_category(category_name):
-        try:
-            category_id = category.add_category(category_name)
-            
-            return jsonify(message = "new category added")
-        
-        except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+    @app.route("/company/categories", methods=['POST'])
+    def add_category():
+        """
+        Add a new category for products.
 
-    # edit existing category in the category table
-    # returns edited category name 
-    @app.route("/company/edit-category/", methods=['POST'])
-    def edit_category():
+        Request JSON:
+        {
+            "category_name": "<category_name>"
+        }
+
+        Response JSON:
+        {
+            "message": "new category added",
+            "category_id": <category_id>
+        }
+        """
         try:
-            
             data = request.get_json()
-            
-            category_name = data['category_name']
-            
-            new_category_name = data['new_category_name']
-            
-            message = category.edit_category(category_name, new_category_name)
-            
-            return jsonify(message = message)
-        
+
+            category_name = data.get('category_name')
+            if not category_name:
+                return jsonify(error="Category name is missing."), 400
+
+            category_id = category_service.add_category(category_name)
+
+            return jsonify(message="new category added", category_id=category_id)
+
         except Exception as err:
             print(traceback.format_exc())
             print(f"{err}")
-            
 
-    # delete existing category
-    @app.route("/company/delete-category/", methods=['POST'])
-    def delete_category():
+
+    @app.route("/company/categories/<string:category_name>", methods=['PUT'])
+    def edit_category(category_name):
+        """
+        Edit an existing category's name.
+
+        Request JSON:
+        {
+            "new_category_name": "<new_category_name>"
+        }
+
+        Response JSON:
+        {
+            "message": "<success_message>"
+        }
+        """
         try:
-            
             data = request.get_json()
-            
-            category_name = data['category_name']
-            
-            category_id = category.delete_category(category_name)
-            
-            return jsonify(message = "category deleted successfully")
-        
+
+            new_category = data.get('new_category')
+            if not new_category:
+                return jsonify(error="New category name is missing."), 400
+
+            message = category_service.edit_category(category_name, new_category)
+
+            return jsonify(message=message)
+
         except Exception as err:
             print(traceback.format_exc())
             print(f"{err}")
-            
 
-    @app.route('/get-all-category', methods=['GET'])
-    def get_all_category():
-        
-        category_list = category.category_list()
-        
-        return jsonify(category_list = category_list)
+
+    @app.route("/company/categories/<string:category_name>", methods=['DELETE'])
+    def delete_category(category_name):
+        """
+        Delete an existing category.
+
+        Response JSON:
+        {
+            "message": "category deleted successfully"
+        }
+        """
+        try:
+            category_id = category_service.delete_category(category_name)
+
+            return jsonify(message="category deleted successfully")
+
+        except Exception as err:
+            print(traceback.format_exc())
+            print(f"{err}")
+
+
+    @app.route('/company/categories', methods=['GET'])
+    def get_all_categories():
+        """
+        Get a list of all categories.
+
+        Response JSON:
+        {
+            "category_list": [
+                {
+                    "id": <category_id>,
+                    "name": "<category_name>"
+                },
+                ...
+            ]
+        }
+        """
+        category_list = category_service.category_list()
+
+        return jsonify(category_list=category_list)

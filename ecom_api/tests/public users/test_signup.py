@@ -36,7 +36,6 @@ def test_signup_route(client, mocker):
     expected_data = {
         "message": "New user signed up! Welcome :)",
         "error": False,
-        "user_id": "1",
     }
     
     if json.loads(response.data) != expected_data:
@@ -55,8 +54,7 @@ def test_signup_route_invalid_input_data(client):
         },
     )
 
-    # Check if the response status code is 500 (Internal Server Error).
-    assert response.status_code == status.HTTP_400_BAD_REQUEST, "Invalid input data was not handled properly"
+    assert response.status_code == 400, "Invalid input data was not handled properly"
 
     # Verify that the response contains the appropriate error message.
     response_data = json.loads(response.data)
@@ -80,7 +78,7 @@ def test_signup_route_empty_request_body(client):
     response = client.post("/user-signup", json={}, content_type="application/json")
 
     # Check if the response status code is 400 (Bad Request).
-    assert response.status_code == status.HTTP_400_BAD_REQUEST, "Empty request body was not handled properly"
+    assert response.status_code == 400, "Empty request body was not handled properly"
 
     # Verify that the response contains the appropriate error message.
     response_data = json.loads(response.data)

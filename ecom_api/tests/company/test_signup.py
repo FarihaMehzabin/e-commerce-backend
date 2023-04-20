@@ -39,7 +39,7 @@ def test_signup_route(client, mocker):
     expected_data = {
         "message": "New user signed up! Welcome :)",
         "error": False,
-        "company_id": "1",
+        
     }
     
     if json.loads(response.data) != expected_data:

@@ -6,7 +6,6 @@ class CompanySignupRequestDataModel:
         self.username = user.get("username")
         self.password = user.get("password")
         self.error_message = None
-        self.status_code = status.HTTP_200_OK
         self.validate()
 
     def validate(self):
@@ -23,7 +22,6 @@ class CompanySignupRequestDataModel:
             
         except ValueError as e:
             self.error_message = str(e)
-            self.status_code = status.HTTP_400_BAD_REQUEST
-        
-    
-    
+            
+    def isValid(self):
+        return self.error_message is None

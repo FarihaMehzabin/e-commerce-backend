@@ -26,7 +26,7 @@ def test_successful_login(client, mocker):
     assert json.loads(response.data) == {
         "message": "Logged in! Welcome :) testuser",
         "error": False,
-        "company_id": 1
+       
     }
 
 def test_invalid_credentials(client, mocker):
@@ -50,7 +50,7 @@ def test_invalid_credentials(client, mocker):
     assert json.loads(response.data) == {
         "message": "Invalid Credentials. Please try again.",
         "error": True,
-        "company_id": 1
+        
     }
 
 def test_invalid_request_data(client):

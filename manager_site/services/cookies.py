@@ -59,7 +59,7 @@ class Cookies:
         print(res)
 
         if res["session_validity"] == True:
-            return make_response(f"welcome {res['company_name']}")
+            return make_response(f"{res['company_name']}")
         else:
             return False
         

@@ -6,7 +6,6 @@ class UserSignupRequestDataModel:
         self.first_name = user.get("first_name")
         self.last_name = user.get("last_name")
         self.error_message = None
-        self.status_code = status.HTTP_200_OK
         self.validate()
 
     def validate(self):
@@ -24,4 +23,6 @@ class UserSignupRequestDataModel:
                 raise ValueError("Invalid last name.")
         except ValueError as e:
             self.error_message = str(e)
-            self.status_code = status.HTTP_400_BAD_REQUEST
+            
+    def isValid(self):
+        return self.error_message is None

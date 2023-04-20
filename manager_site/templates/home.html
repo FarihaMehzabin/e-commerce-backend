@@ -56,18 +56,27 @@
 <body>
     <header>
         {% if user_logged %}
-            <h3>{{ user_logged }}</h3>
+            <h3>Welcome, {{ user_logged }}!</h3>
         {% else %}
-            <h1>Please log in to access the manager dashboard.</h1>
+            <h1>Please log in or sign up to access the manager dashboard.</h1>
         {% endif %}
     </header>
     <main>
         {% if user_logged %}
             <section>
-            <a href="{{ url_for('manage_categories') }}">Manage Product Categories</a>
+                <a href="{{ url_for('manage_categories') }}">Manage Categories</a>
             </section>
             <section>
                 <h2>Manage Products</h2>
+            </section>
+        {% else %}
+            <section>
+                <h2>Login</h2>
+                <a href="{{ url_for('show_login_page') }}">Login</a>
+            </section>
+            <section>
+                <h2>Sign Up</h2>
+                <a href="{{ url_for('signup') }}">Sign Up</a>
             </section>
         {% endif %}
     </main>

@@ -17,11 +17,11 @@ document.querySelectorAll(".edit-category").forEach((button) => {
         let response = await fetch(
           "http://127.0.0.1:1234/product/manage-category/edit",
           {
-            method: "POST",
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               category_name: categoryName,
-              new_category_name: newCategoryName,
+              new_category: newCategoryName,
             }),
           }
         );

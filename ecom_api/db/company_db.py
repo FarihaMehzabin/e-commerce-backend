@@ -29,4 +29,19 @@ class CompanyDB:
             print(traceback.format_exc())
             print(f"{err}")
             return None, None
+        
+    def category_list(self):
+        res = self.db.fetch("SELECT name FROM Category")
+        
+        return res
+    
+    def add_category(self, category):
+        res = self.db.insert(f"INSERT INTO Category (name) VALUES (%s)", (category,))   
+        
+        return res
+    
+    def edit_category(self, old_category, new_category):
+        res = self.db.edit(f'UPDATE Category SET name = "{new_category}" WHERE name = "{old_category}";')
+        
+        
     

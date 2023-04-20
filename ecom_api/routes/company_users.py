@@ -49,8 +49,8 @@ def company_users_routes(app):
             company_data = CompanySignupRequestDataModel(request_data)
 
             # If there was an error in parsing the request data, return the error message
-            if company_data.status_code == status.HTTP_400_BAD_REQUEST:
-                return jsonify(error=company_data.error_message), company_data.status_code
+            if not company_data.isValid():
+                return jsonify(error=company_data.error_message), 400
 
             # Process the signup request using the signup service
             signup_response = signup_service.comp_signup(company_data)
@@ -75,8 +75,8 @@ def company_users_routes(app):
             company_data = CompanyLoginRequestDataModel(request.get_json())
 
             # If there was an error in parsing the request data, return the error message
-            if company_data.status_code == status.HTTP_400_BAD_REQUEST:
-                return jsonify(error = company_data.error_message), status.HTTP_400_BAD_REQUEST
+            if not company_data.isValid():
+                return jsonify(error=company_data.error_message), 400
 
             # Process the login request using the login service
             login_response = login_service.comp_login(company_data)

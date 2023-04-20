@@ -48,8 +48,8 @@ def public_users_routes(app):
             user_data = UserLoginRequestDataModel(request_data)
 
             # If the user data is invalid, return an error message
-            if user_data.status_code == status.HTTP_400_BAD_REQUEST:
-                return jsonify(error=user_data.error_message), user_data.status_code
+            if not user_data.isValid():
+                return jsonify(error=user_data.error_message), 400
 
             # Call the login service with the validated user data
             login_response = login_service.user_login(user_data)
@@ -79,8 +79,8 @@ def public_users_routes(app):
             user_data = UserSignupRequestDataModel(request_data)
 
             # If the user data is invalid, return an error message
-            if user_data.status_code == status.HTTP_400_BAD_REQUEST:
-                return jsonify(error=user_data.error_message), status.HTTP_400_BAD_REQUEST
+            if not user_data.isValid():
+                return jsonify(error=user_data.error_message), 400
 
             # Call the signup service with the validated user data
             signup_response = signup_service.user_signup(user_data)

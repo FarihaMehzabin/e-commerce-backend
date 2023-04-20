@@ -49,7 +49,7 @@ def signup_login_routes(app):
             return render_template("error.html", error=str(e))
 
     @app.route("/company/user/signup", methods=["GET"])
-    def sign_up():
+    def signup():
         try:
             return render_template("signup.html", error=None)
         except Exception as e:
