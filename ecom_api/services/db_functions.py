@@ -1,4 +1,5 @@
 import mysql.connector
+from requests import delete
 
 class DbFunctions:
     def insert(self, statement, values):
@@ -54,6 +55,28 @@ class DbFunctions:
 
         if cursor.rowcount > 0:
             result = "updated successfully"
+        else:
+            result = "No matching record found"
+        
+        db_config.commit()
+        
+        cursor.close()
+        db_config.close()
+
+        return result
+    
+    def delete(self, statement):
+        db_config = mysql.connector.connect(
+            host="localhost", user="root", password="password", database="ecommerce"
+        )
+        cursor = db_config.cursor()
+
+        cursor.execute(statement)
+        
+        print(statement)
+
+        if cursor.rowcount > 0:
+            result = "deleted successfully"
         else:
             result = "No matching record found"
         

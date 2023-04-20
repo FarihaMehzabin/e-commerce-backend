@@ -38,7 +38,7 @@ def category_routes(app):
         category_name = data['category_name']
         
         response = requests.post(
-            "http://127.0.0.1:8080/company/add-category",
+            "http://127.0.0.1:8080/company/categories",
             json={"category_name": category_name}
         )
         
@@ -81,11 +81,6 @@ def category_routes(app):
         """
         Delete an existing category.
 
-        Request JSON:
-        {
-            "category_name": "<category_name>"
-        }
-
         Response JSON:
         {
             "message": "<success_message>"
@@ -95,8 +90,8 @@ def category_routes(app):
         category_name = data['category_name']
 
         response = requests.delete(
-            "http://127.0.0.1:8080/company/delete-category/",
-            json={"category_name": category_name},
+            f"http://127.0.0.1:8080/company/categories/{category_name}",
+            
         )
         
         res = response.json()

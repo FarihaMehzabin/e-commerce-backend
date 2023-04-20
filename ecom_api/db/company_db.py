@@ -43,5 +43,12 @@ class CompanyDB:
     def edit_category(self, old_category, new_category):
         res = self.db.edit(f'UPDATE Category SET name = "{new_category}" WHERE name = "{old_category}";')
         
+        return "Category edited successfully"
+    
+    def delete_category(self, category):
+        res = self.db.delete(f'DELETE FROM Category WHERE name = "{category}";')
+        
+        return "Category deleted successfully"
+        
         
     

@@ -26,12 +26,13 @@ def categories_routes(app):
             data = request.get_json()
 
             category_name = data.get('category_name')
+            
             if not category_name:
                 return jsonify(error="Category name is missing."), 400
 
             category_id = category_service.add_category(category_name)
 
-            return jsonify(message="new category added", category_id=category_id)
+            return jsonify(message="new category added")
 
         except Exception as err:
             print(traceback.format_exc())

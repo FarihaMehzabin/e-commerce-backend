@@ -34,3 +34,9 @@ class CategoryService:
         print(message)
         
         return message
+    
+    def delete_category(self, category):
+        
+        message = self.company_db.delete_category(category)
+        
+        return message
