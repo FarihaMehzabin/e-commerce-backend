@@ -19,7 +19,6 @@ def categories_routes(app):
         Response JSON:
         {
             "message": "new category added",
-            "category_id": <category_id>
         }
         """
         try:
@@ -32,7 +31,7 @@ def categories_routes(app):
 
             category_id = category_service.add_category(category_name)
 
-            return jsonify(message="new category added")
+            return jsonify(message="new category added"), 201
 
         except Exception as err:
             print(traceback.format_exc())
@@ -63,7 +62,7 @@ def categories_routes(app):
 
             message = category_service.edit_category(category_name, new_category)
 
-            return jsonify(message=message)
+            return jsonify(message=message), 201
 
         except Exception as err:
             print(traceback.format_exc())
@@ -83,7 +82,7 @@ def categories_routes(app):
         try:
             category_id = category_service.delete_category(category_name)
 
-            return jsonify(message="category deleted successfully")
+            return jsonify(message="category deleted successfully"), 201
 
         except Exception as err:
             print(traceback.format_exc())
@@ -108,4 +107,4 @@ def categories_routes(app):
         """
         category_list = category_service.category_list()
 
-        return jsonify(category_list=category_list)
+        return jsonify(category_list=category_list), 201

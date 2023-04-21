@@ -126,7 +126,7 @@ def company_users_routes(app):
 
             # Create a response data model object with the session validity and company name
             response_data = CheckCompanySessionResponseModel(
-                response.session_valid, response.company_name
+                response.session_valid, response.company_name, response.company_id
             )
 
             # Return the response data as JSON

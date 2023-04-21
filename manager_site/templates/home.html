@@ -67,7 +67,7 @@
                 <a href="{{ url_for('manage_categories') }}">Manage Categories</a>
             </section>
             <section>
-                <h2>Manage Products</h2>
+                <a href="{{ url_for('show_company_products', id=company_id) }}">Manage Products</a>
             </section>
         {% else %}
             <section>

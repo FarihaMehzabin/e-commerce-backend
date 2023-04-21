@@ -8,10 +8,11 @@ class Cookies:
         
         message = ""
         err_message = ""
+        company_id = ""
 
         if cookie_check:
             
-            cookie_validity = self.check_cookie_validity()
+            cookie_validity, company_id = self.check_cookie_validity()
             
             if cookie_validity:
                 
@@ -21,7 +22,7 @@ class Cookies:
             else:
                 err_message = False
 
-        return message, err_message
+        return message, err_message, company_id
 
     
     def set_cookie(self, comp_id):
@@ -59,7 +60,7 @@ class Cookies:
         print(res)
 
         if res["session_validity"] == True:
-            return make_response(f"{res['company_name']}")
+            return make_response(f"{res['company_name']}"), res["company_id"]
         else:
             return False
         

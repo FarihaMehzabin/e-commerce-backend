@@ -36,7 +36,7 @@ class CompanySessionService:
                 
                 data = res[0]
                 
-                response = CheckCompanySessionResultDataModel(True, data)
+                response = CheckCompanySessionResultDataModel(True, data, comp_id)
                     
                 return response
 
