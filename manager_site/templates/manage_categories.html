@@ -78,10 +78,10 @@
             <ul id="category-list">
                 {% for category in categories %}
                     <li>
-                        {{ category[0]}}
+                        {{ category['category_name']}}
                         <div>
-                            <button class="edit-category" data-name="{{ category[0] }}">Edit</button>
-                            <button class="delete-category" data-name="{{ category[0] }}">Delete</button>
+                            <button class="edit-category" data-name="{{ category['category_name'] }}">Edit</button>
+                            <button class="delete-category" data-name="{{ category['category_name'] }}">Delete</button>
                         </div>
                     </li>
                 {% endfor %}

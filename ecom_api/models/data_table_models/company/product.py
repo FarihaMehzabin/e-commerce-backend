@@ -8,7 +8,8 @@ class ProductDataModel:
         self.unit = product_tuple[5]
         self.weight = product_tuple[6]
         self.brand = product_tuple[7]
-        
+        self.category_ids = []
+        self.category_names = []
 
     def to_dict(self):
         return {
@@ -19,5 +20,7 @@ class ProductDataModel:
             "unit": self.unit,
             "weight": self.weight,
             "brand": self.brand,
-            "description": self.product_description
+            "description": self.product_description,
+            "category_ids": self.category_ids,
+            "category_names": self.category_names,
         }

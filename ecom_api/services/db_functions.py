@@ -65,3 +65,20 @@ class DbFunctions:
             db_config.commit()
 
         return result
+    
+    def call_proc(self, proc, params):
+        with self.DbConnection() as (cursor, db_config):
+            cursor.callproc(proc, params)
+            
+            # Get the number of affected rows
+            affected_rows = cursor.rowcount
+
+            # Check if the stored procedure affected any rows
+            if affected_rows > 0:
+                print(f"Stored procedure '{proc}' executed successfully, affecting {affected_rows} row(s).")
+            else:
+                print(f"Stored procedure '{proc}' executed, but no rows were affected.")
+
+            db_config.commit()
+
+        

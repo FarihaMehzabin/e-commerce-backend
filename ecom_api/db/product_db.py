@@ -17,6 +17,11 @@ class ProductDB:
 
         return data
     
+    def get_categories_by_company_id(self, company_id):
+        data = self.db.fetch(f"SELECT * FROM product_category pc WHERE pc.product_id IN (SELECT p.id FROM product p WHERE company_id = {company_id})")
+        
+        return data
+    
     def get_product_by_id(self, id):
         data = self.db.fetch(f"SELECT * FROM product WHERE id = {id}")
 
@@ -57,7 +62,16 @@ class ProductDB:
         return result
 
         
-
+    def update_categories(self, product_id, category_ids):
+        
+        category_ids_str = ','.join(map(str, category_ids))
+        
+        self.db.call_proc("update_product_categories", (product_id, category_ids_str))
+        
+    def add_categories(self, product_id, category_ids):
+        category_ids_str = ','.join(map(str, category_ids))
+        
+        self.db.call_proc("add_product_categories", (product_id, category_ids_str))
 
 
         

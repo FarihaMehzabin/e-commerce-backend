@@ -1,77 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Product</title>
-<style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        label {
-            margin-bottom: 5px;
-        }
-
-        input {
-            margin-bottom: 15px;
-            padding: 5px;
-            width: 300px;
-        }
-
-        button {
-            width: 150px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
 <body>
-    <h1>Edit Product</h1>
-    <form action="{{ url_for('edit_product', product_id=product_id, company_id = company_id) }}" method="post">
-        <input type="hidden" name="product_id" value="{{ product_id }}">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="{{ product.product_name }}">
-        <br>
-        <label for="brand">Brand:</label>
-        <input type="text" id="brand" name="brand" value="{{ product.brand }}">
-        <br>
-        <label for="price">Price:</label>
-        <input type="number" id="price" name="price" step="0.01" value="{{ product.product_price }}">
-        <br>
-        <label for="unit">Unit:</label>
-        <input type="number" id="unit" name="unit" value="{{ product.unit }}">
-        <br>
-        <label for="item_weight">Item Weight:</label>
-        <input type="text" id="item_weight" name="item_weight" value="{{ product.weight }}">
-        <br>
-        <label for="product_description">Product Description:</label>
-        <input type="text" id="product_description" name="product_description" value="{{ product.description }}">
-        <br>
-        <button type="submit">Update Product</button>
-    </form>
+  <h1>Edit Product</h1>
+  <form
+    action="{{ url_for('edit_product', product_id=product.product_id, company_id=product.company_id) }}"
+    method="post"
+  >
+    <input type="hidden" name="product_id" value="{{ product.product_id }}" />
+    <label for="name">Name:</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      value="{{ product.product_name }}"
+    />
+    <br />
+    <label for="brand">Brand:</label>
+    <input type="text" id="brand" name="brand" value="{{ product.brand }}" />
+    <br />
+    <label for="price">Price:</label>
+    <input
+      type="number"
+      id="price"
+      name="price"
+      step="0.01"
+      value="{{ product.product_price }}"
+    />
+    <br />
+    <label for="unit">Unit:</label>
+    <input type="number" id="unit" name="unit" value="{{ product.unit }}" />
+    <br />
+    <label for="item_weight">Item Weight:</label>
+    <input
+      type="text"
+      id="item_weight"
+      name="item_weight"
+      value="{{ product.weight }}"
+    />
+    <br />
+    <label for="product_description">Product Description:</label>
+    <input
+      type="text"
+      id="product_description"
+      name="product_description"
+      value="{{ product.description }}"
+    />
+    <br />
+    <label for="categories">Categories:</label>
+    <br />
+    {% for category_id, category_name in all_categories %}
+    <input
+      type="checkbox"
+      id="category_{{ category_id }}"
+      name="categories"
+      value="{{ category_id }}"
+      {% if category_name in product.category_names %}checked{% endif %}
+    />
+    <label for="category_{{ category_id }}">{{ category_name }}</label>
+    <br />
+    {% endfor %}
+    <button type="submit">Update Product</button>
+  </form>
 </body>
-</html>

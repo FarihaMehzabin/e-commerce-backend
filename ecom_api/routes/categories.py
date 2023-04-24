@@ -2,6 +2,7 @@ import traceback
 from flask import request, jsonify
 from ecom_api.services.company.categories import CategoryService
 
+
 category_service = CategoryService()
 
 def categories_routes(app): 

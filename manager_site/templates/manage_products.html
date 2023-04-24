@@ -79,6 +79,7 @@
             <th>Description</th>
             <th>Unit</th>
             <th>Weight</th>
+            <th>Categories</th>
             <th>Brand</th>
             <th>Actions</th>
           </tr>
@@ -92,12 +93,15 @@
             <td>{{ product.description }}</td>
             <td>{{ product.unit }}</td>
             <td>{{ product.weight }}</td>
+            <td>{{ ", ".join(product.category_names) }}</td>
             <td>{{ product.brand }}</td>
             <td>
               <a
-                href="{{ url_for('show_edit_product_form', product_id=product.product_id, company_id = company_id)}}"
-                >Edit</a>
-              |
+                href="{{ url_for('show_edit_product_form', product_id=product.product_id)}}"
+              >
+                Edit
+              </a>
+              | |
               <a href="#" onclick="deleteProduct({{ product.product_id }})"
                 >Delete</a
               >

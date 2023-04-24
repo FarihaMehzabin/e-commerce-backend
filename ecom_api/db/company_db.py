@@ -29,11 +29,6 @@ class CompanyDB:
             print(traceback.format_exc())
             print(f"{err}")
             return None, None
-        
-    def category_list(self):
-        res = self.db.fetch("SELECT name FROM Category")
-        
-        return res
     
     def add_category(self, category):
         res = self.db.insert(f"INSERT INTO Category (name) VALUES (%s)", (category,))   

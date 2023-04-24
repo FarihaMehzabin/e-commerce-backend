@@ -1,16 +1,20 @@
 from ecom_api.db.company_db import CompanyDB
-
+from ecom_api.models.data_table_models.company.category import CategoryDataModel
+from ecom_api.db.category_db import CategoryDB
 
 class CategoryService:
     
     def __init__(self) -> None:
         self.company_db = CompanyDB()
+        self.category_db = CategoryDB()
         
     def category_list(self):
         
         print("Fetching categories...")
         
-        category_list = self.company_db.category_list()
+        category_data = self.category_db.get_all_categories()
+        
+        category_list = [CategoryDataModel(category).to_dict() for category in category_data]
         
         print(f"Category list: {category_list}")
         

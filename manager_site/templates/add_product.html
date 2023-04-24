@@ -1,71 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Product</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        h1 {
-            background-color: #4CAF50;
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        label {
-            margin: 10px 0;
-        }
-        input {
-            width: 50%;
-            padding: 10px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        background-color: #4caf50;
+        color: white;
+        text-align: center;
+        padding: 20px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      label {
+        margin: 10px 0;
+      }
+      input {
+        width: 50%;
+        padding: 10px;
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        margin-top: 10px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Add Product</h1>
-    <form action="{{ url_for('add_product', company_id=company_id) }}" method="post">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name">
-        <br>
-        <label for="brand">Brand:</label>
-        <input type="text" id="brand" name="brand">
-        <br>
-        <label for="price">Price:</label>
-        <input type="number" id="price" name="price" step="0.01">
-        <br>
-        <label for="unit">Unit:</label>
-        <input type="number" id="unit" name="unit">
-        <br>
-        <label for="item_weight">Item Weight:</label>
-        <input type="text" id="item_weight" name="item_weight">
-        <br>
-        <label for="product_description">Product Description:</label>
-        <input type="text" id="product_description" name="product_description">
-        <br>
-        <button type="submit">Add Product</button>
+    <form
+      action="{{ url_for('add_product', company_id=company_id) }}"
+      method="post"
+    >
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" />
+      <br />
+      <label for="brand">Brand:</label>
+      <input type="text" id="brand" name="brand" />
+      <br />
+      <label for="price">Price:</label>
+      <input type="number" id="price" name="price" step="0.01" />
+      <br />
+      <label for="unit">Unit:</label>
+      <input type="number" id="unit" name="unit" />
+      <br />
+      <label for="item_weight">Item Weight:</label>
+      <input type="text" id="item_weight" name="item_weight" />
+      <br />
+      <label for="categories">Categories:</label>
+      <br />
+      {% for category_id, category_name in all_categories %}
+      <input
+        type="checkbox"
+        id="category_{{ category_id }}"
+        name="categories"
+        value="{{ category_id }}"
+      />
+      <label for="category_{{ category_id }}">{{ category_name }}</label>
+      <br />
+      {% endfor %}
+      <label for="product_description">Product Description:</label>
+      <input type="text" id="product_description" name="product_description" />
+      <br />
+      <button type="submit">Add Product</button>
     </form>
-</body>
+  </body>
 </html>
