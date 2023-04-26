@@ -27,7 +27,7 @@ class UserSessionService:
 
             user_data = self.user_session_db.get_user_by_id(user_id)
             if user_data:
-                response = CheckUserSessionResultDataModel(True, user_data[0] + user_data[1])
+                response = CheckUserSessionResultDataModel(True, user_data[0] + user_data[1], user_id)
                 return response
 
         return CheckUserSessionResultDataModel(False, 'No user found')

@@ -68,8 +68,9 @@ class DbFunctions:
     
     def call_proc(self, proc, params):
         with self.DbConnection() as (cursor, db_config):
-            cursor.callproc(proc, params)
             
+            cursor.callproc(proc, params)
+           
             # Get the number of affected rows
             affected_rows = cursor.rowcount
 
@@ -80,5 +81,18 @@ class DbFunctions:
                 print(f"Stored procedure '{proc}' executed, but no rows were affected.")
 
             db_config.commit()
+
+    def call_proc_fetch(self, proc):
+        with self.DbConnection() as (cursor, db_config):
+            
+            cursor.callproc(proc)
+           
+            # Fetch and process the results
+            data = []
+            
+            for result in cursor.stored_results():
+                data.extend(result.fetchall())
+                
+            return data
 
         

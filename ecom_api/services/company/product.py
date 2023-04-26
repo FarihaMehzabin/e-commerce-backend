@@ -4,12 +4,37 @@ from ecom_api.models.data_table_models.company.product import ProductDataModel
 from ecom_api.models.data_table_models.company.product_category import ProductCategoryDataModel
 from ecom_api.db.application import Application
 from ecom_api.logger import Logger
+from ecom_api.routes import products
 
 class ProductService:
     def __init__(self):
         self.product_db = ProductDB()
         self.cache = Application.instance()
         self.logger = Logger("ProductService")
+    
+    
+    def get_all_products(self):
+        product_data = self.product_db.get_all_products()
+        
+        products = {}
+        
+        for data in product_data:
+            
+            if data[0] not in products:
+                product = ProductDataModel(data)
+                
+                category_name = self.cache.category_repository.get_category(data[8])
+                
+                product.category_names.append(category_name)
+                
+                products[product.product_id] = product.to_dict()
+            else:
+                category_name = self.cache.category_repository.get_category(data[8])
+                
+                products[data[0]]['category_names'].append(category_name)
+            
+        return {"products": products}
+        
     
     def get_products_by_company(self, id):
         

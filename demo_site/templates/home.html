@@ -8,22 +8,275 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
     <title>Home</title>
 </head>
-<body>  
-<h3>{{message}}</h3>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+        }
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 2rem;
+        }
+        section {
+            background-color: #fff;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+        }
+        a {
+            display: inline-block;
+            background-color: #333;
+            color: #fff;
+            padding: 0.5rem 2rem;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background-color: #555;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+  .content {
+        display: flex;
+    }
+    .basket {
+        position: fixed;
+        top: 0;
+        right: 0;
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 5px;
+    }
+    .basket-container {
+        display: flex;
+        flex-direction: column;
+    }
+    .basket-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+    .basket {
+        border: 1px solid #ccc;
+        padding: 1rem;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 300px;
+    }
+    
+    .basket h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .basket-toggle {
+        cursor: pointer;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .checkout {
+        background-color: #333;
+        color: #fff;
+        text-decoration: none;
+        padding: 0.5rem 2rem;
+        border-radius: 5px;
+        display: inline-block;
+    }
+
+    .checkout:hover {
+        background-color: #555;
+    }
+
+    .basket-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 0.5rem;
+    }
+
+    .basket-item:last-child {
+        border-bottom: none;
+    }
+
+    .basket-item span {
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .quantity {
+        width: 50px;
+        font-size: 1rem;
+        padding: 0.25rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .remove-button {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.remove-button:hover {
+    background-color: #d32f2f;
+}
+
+
+    </style>
+<body> 
+  <header>
+        {% if user_logged %}
+            <h3>{{ user_logged }}!</h3>
+        {% else %}
+             <section>
+                <a href="{{ url_for('show_login_page') }}">Login</a>
+            </section>
+            <section>
+                <a href="{{ url_for('show_signup_page') }}">Signup</a>
+            </section>
+        {% endif %}
+    </header> 
 <div class="product-container">
-{% for row in data %}
+{% for product_id, row in data.items() %}
   <div class="product-card">
     <img
       src="https://images.unsplash.com/photo-1602143407151-7111542de6e8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
       alt="Product Name"
       class="product-image"
     />
-    <h3 class="product-name">{{row.0}}</h3>
-    <p class="product-description">{{row.2}}</p>
-    <div class="product-price">${{row.1}}</div>
+    <h3 class="product-name">{{row["product_name"]}}</h3>
+    <p class="product-description">{{row["description"]}}</p>
+    <div class="product-price">${{row["product_price"]}}</div>
     <button class="add-to-cart-button">Add to Cart</button>
   </div>
 {% endfor %}
 </div>
+   <section class="basket">
+        <div class="basket-toggle" onclick="toggleBasket()">
+            <span id="toggle-text">—</span>
+        </div>
+        <h2>Basket</h2>
+        <div class="basket-container"></div>
+        <a href="#" class="checkout" id="checkout-button">Checkout</a>
+    </section>
+
+    <script>
+        const addToCartButtons = document.querySelectorAll('.add-to-cart-button');
+        const basketContainer = document.querySelector('.basket-container');
+        const checkoutButton = document.querySelector('.checkout');
+
+        const data = JSON.parse('{{ data | tojson }}');
+
+        checkoutButton.addEventListener('click', () =>{
+          console.log("click")
+
+          const basketItems = document.querySelectorAll(".basket-item");
+    const items = [];
+
+    console.log(basketItems)
+
+    basketItems.forEach((item) => {
+        const productId = item.dataset.productId;
+        const productName = item.querySelector("span").textContent;
+        const price = parseFloat(data[productId]["product_price"]);
+        const quantity = parseInt(item.querySelector(".quantity").value);
+
+        items.push({
+            product_id: productId,
+            product_name: productName,
+            price: price,
+            quantity: quantity,
+        });
+    });
+localStorage.setItem("cartItems", JSON.stringify(items));
+
+    window.location.href = "/checkout";
+        })
+
+        addToCartButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                addToBasket(index);
+            });
+        });
+
+        function addToBasket(index) {
+            const productName = document.querySelectorAll('.product-name')[index].innerText;
+            const productId = Object.keys(data)[index];
+            const basketItem = document.createElement('div');
+            basketItem.classList.add('basket-item');
+            basketItem.dataset.productId = productId;
+            basketItem.innerHTML = `
+    <span>${productName}</span>
+    <input type="number" value="1" min="1" class="quantity">
+    <button class="remove-button">Remove</button>
+`;
+
+            basketContainer.appendChild(basketItem);
+
+            basketItem.querySelector('.quantity').addEventListener('change', (event) => {
+                const quantity = event.target.value;
+                
+                // Store the updated quantity here
+            });
+
+            basketItem.querySelector('.remove-button').addEventListener('click', (event) => {
+                const itemToRemove = basketContainer.querySelector(`.basket-item[data-product-id="${productId}"]`);
+                if (itemToRemove) {
+                  basketContainer.removeChild(itemToRemove);
+                 }
+            });
+        }
+
+        function toggleBasket() {
+            const basketContent = document.querySelector('.basket-container');
+            const basketHeader = document.querySelector('.basket h2');
+            const checkoutButton = document.querySelector('.checkout');
+            const toggleText = document.querySelector('#toggle-text');
+
+            if (basketContent.style.display === 'none') {
+                basketContent.style.display = 'block';
+                basketHeader.style.display = 'block';
+                checkoutButton.style.display = 'block';
+                toggleText.textContent = '—';
+            } else {
+                basketContent.style.display = 'none';
+                basketHeader.style.display = 'none';
+                checkoutButton.style.display = 'none';
+                toggleText.textContent = 'Cart 🛒';
+            }
+        }
+
+      
+
+        
+
+        
+    </script>
 </body>
 </html>

@@ -34,9 +34,9 @@ class CompanySessionService:
 
                 res = self.company_session_db.get_user_by_id(comp_id)
                 
-                data = res[0]
+                company_name = res[0]
                 
-                response = CheckCompanySessionResultDataModel(True, data, comp_id)
+                response = CheckCompanySessionResultDataModel(True, company_name, comp_id)
                     
                 return response
 

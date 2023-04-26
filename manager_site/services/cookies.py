@@ -40,8 +40,6 @@ class Cookies:
     def get_cookie(self):
         name = request.cookies.get("session")
 
-        print(name)
-
         if name is None:
 
             return False
@@ -56,8 +54,6 @@ class Cookies:
         data = requests.post(f"http://127.0.0.1:8080/company/check-cookie-validity/{guid}")
 
         res = data.json()
-
-        print(res)
 
         if res["session_validity"] == True:
             return make_response(f"{res['company_name']}"), res["company_id"]

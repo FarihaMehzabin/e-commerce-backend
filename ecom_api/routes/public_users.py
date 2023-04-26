@@ -93,7 +93,8 @@ def public_users_routes(app):
 
         except Exception as err:
             print(traceback.format_exc())
-            print(f"{err}")
+            logging.error(f"An unexpected error occurred: {err}")
+            return jsonify(error="An unexpected error occurred. Please contact the support team."), 500
 
     # Route for creating a user session
     @app.route("/user/create-session/<user_id>", methods=["POST"])
@@ -101,13 +102,13 @@ def public_users_routes(app):
         try:
             # Instantiate the user session service
             user_session_service = UserSessionService()
-            
-            if not response:
-                return jsonify({"error": "Failed to create session"}), 500
 
             # Call the session service to create a new session for the provided user ID
             response = user_session_service.create_session(user_id)
 
+            if not response:
+                return jsonify({"error": "Failed to create session"}), 500
+            
             # Create a response data model object with the new session GUID
             response_data = CreateUserSessionResponseModel(response.guid)
 
@@ -130,7 +131,7 @@ def public_users_routes(app):
 
             # Create a response data model object with the session validity and username
             response_data = CheckUserSessionResponseModel(
-                response.session_valid, response.username
+                response.session_valid, response.username, response.user_id
             )
 
             # Return the response data as JSON
@@ -140,3 +141,5 @@ def public_users_routes(app):
             print(traceback.format_exc())
             print(f"{err}")
 
+
+    

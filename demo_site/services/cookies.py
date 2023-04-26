@@ -9,9 +9,10 @@ class Cookies:
 
         message = ""
         err_message = ""
+        user_id = ""
 
         if cookie_check:
-            cookie_validity = self.check_cookie_validity()
+            cookie_validity, user_id = self.check_cookie_validity()
 
             if cookie_validity:
                 message = cookie_validity.data.decode('utf-8')
@@ -19,7 +20,7 @@ class Cookies:
             else:
                 err_message = False
 
-        return message, err_message
+        return message, err_message, user_id
 
     # Set a new cookie with the user_id as a parameter
     def set_cookie(self, user_id):
@@ -44,7 +45,7 @@ class Cookies:
         res = data.json()
 
         if res["session_validity"] == True:
-            return make_response(f"welcome {res['username']}")
+            return make_response(f"welcome {res['username']}"), res["user_id"]
         else:
             return False
 

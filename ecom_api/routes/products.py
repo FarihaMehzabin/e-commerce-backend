@@ -9,14 +9,15 @@ product_service = ProductService()
 
 
 def products_routes(app):
-    @app.route("/company/pull-all-products", methods=["GET"])
+    @app.route("/pull-all-products", methods=["GET"])
     def pull_all_products():
         """
         Fetch all products and return them as JSON.
         """
         try:
-            product_db = ProductDB()
-            products = product_db.get_products()
+            products = product_service.get_all_products()
+            
+            print(products)
 
             return jsonify(products=products)
 

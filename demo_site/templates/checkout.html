@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            text-align: left;
+            padding: 0.5rem;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        input, select, button {
+            font-size: 1rem;
+            padding: 0.25rem;
+        }
+        button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 0.5rem 2rem;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Checkout</h1>
+    <table id="cart-items">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Quantity</th>
+                <th>Price per unit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Cart items will be populated here -->
+        </tbody>
+    </table>
+    <h2>Total: $<span id="total"></span></h2>
+
+    <form id="checkout-form" onsubmit="submitCheckoutForm(event)">
+        <div>
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required>
+        </div>
+        <div>
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required>
+        </div>
+        <div>
+            <label for="postcode">Postcode:</label>
+            <input type="text" id="postcode" name="postcode" required>
+        </div>
+        <div>
+            <label for="billing">Billing Method:</label>
+            <select id="billing" name="billing">
+                <option value="card">Card</option>
+                <option value="paypal">PayPal</option>
+            </select>
+        </div>
+        <button type="submit">Done</button>
+    </form>
+
+    <script>
+        function populateCartItems() {
+            const cartItems = JSON.parse(localStorage.getItem("cartItems"));
+            const cartItemsTable = document.getElementById("cart-items").querySelector("tbody");
+            let total = 0;
+
+            cartItems.forEach(item => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.product_name}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                `;
+                cartItemsTable.appendChild(row);
+                total += item.price * item.quantity;
+            });
+
+            document.getElementById("total").textContent = total.toFixed(2);
+        }
+
+        function submitCheckoutForm(event) {
+            event.preventDefault();
+
+            const cartItems = JSON.parse(localStorage.getItem("cartItems"));
+            const delivery = {
+                address_line_1: document.getElementById("address").value,
+                city: document.getElementById("city").value,
+                postcode: document.getElementById("postcode").value
+            };
+
+            const checkoutData = {
+                items: cartItems.map(item => ({ product_id: item.product_id, quantity: item.quantity })),
+                delivery: delivery
+            };
+
+            fetch("/submit_checkout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(checkoutData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Success:", data);
+                // Redirect or display a success message
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+
+        populateCartItems();
+    </script>
+</body>
+</html>

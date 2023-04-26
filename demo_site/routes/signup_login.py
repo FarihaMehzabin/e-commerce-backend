@@ -27,7 +27,7 @@ def signup_login_routes(app):
         try:
             error = None
             # Check if the user is already logged in (valid cookie)
-            cookie_validity, is_cookie_valid = cookie_service.check_cookie()
+            cookie_validity, is_cookie_valid, user_id = cookie_service.check_cookie()
             
             if is_cookie_valid:
                 # Redirect to the index page if the user is already logged in
@@ -56,6 +56,7 @@ def signup_login_routes(app):
             login_response_data = LoginResponseModel(res)
             
             return cookie_service.return_cookie(login_response_data)
+        
         except Exception as e:
             print(traceback.format_exc())
             return render_template("error.html", error=str(e))
@@ -85,6 +86,8 @@ def signup_login_routes(app):
             )
             # Attempt to create a new user
             res = signup_service.create_user(user_signup_data)
+            
+            print(res)
 
             if res["error"]:
                 # Display an error message if the signup failed
