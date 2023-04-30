@@ -3,4 +3,5 @@
 **/__init__.py
 **/.pytest_cache/
 **/ecomAPI.egg-info/
+.DS_Store
 **/.DS_Store
