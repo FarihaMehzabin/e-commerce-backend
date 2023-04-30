@@ -62,9 +62,10 @@
     <table id="cart-items">
         <thead>
             <tr>
-                <th>Product ID</th>
+                <th>Product</th>
                 <th>Quantity</th>
                 <th>Price per unit</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -93,10 +94,48 @@
                 <option value="paypal">PayPal</option>
             </select>
         </div>
-        <button type="submit">Done</button>
+        <button type="submit">Continue to Payment</button>
     </form>
 
     <script>
+        function updateTotal() {
+            const cartItems = JSON.parse(localStorage.getItem("cartItems"));
+            let total = 0;
+            cartItems.forEach(item => {
+                total += item.price * item.quantity;
+            });
+            document.getElementById("total").textContent = total.toFixed(2);
+            
+        }
+        function updateCartItemQuantity(cartItem, newQuantity) {
+            const cartItems = JSON.parse(localStorage.getItem("cartItems"));
+    const productId = cartItem.dataset.productId;
+    console.log("cartItems:", cartItems);
+console.log("productId:", productId);
+
+    const item = cartItems.find(item => item.product_id === productId);
+    item.quantity = newQuantity;
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    // Update the price cell in the table row
+    const pricePerUnit = item.price;
+    const totalPriceForItem = pricePerUnit * newQuantity;
+    cartItem.querySelector("td:nth-child(3)").textContent = totalPriceForItem.toFixed(2);
+    updateTotal();
+        }
+
+        function removeCartItem(cartItem) {
+    const cartItems = JSON.parse(localStorage.getItem("cartItems"));
+    const productId = parseInt(cartItem.dataset.productId);
+    const index = cartItems.findIndex(item => item.product_id === productId);
+    cartItems.splice(index, 1);
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    cartItem.remove();
+    updateTotal();
+
+    console.log(JSON.parse(localStorage.getItem("cartItems")));
+}
+
+
         function populateCartItems() {
             const cartItems = JSON.parse(localStorage.getItem("cartItems"));
             const cartItemsTable = document.getElementById("cart-items").querySelector("tbody");
@@ -105,10 +144,17 @@
             cartItems.forEach(item => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${item.product_name}</td>
-                    <td>${item.quantity}</td>
+                     <td>${item.product_name}</td>
+                    <td>
+                        <input class="quantity" type="number" min="1" value="${item.quantity}"
+                            onchange="updateCartItemQuantity(this.closest('tr'), parseInt(this.value))">
+                    </td>
                     <td>${item.price}</td>
+                    <td>
+                        <button onclick="removeCartItem(this.closest('tr'))">Remove</button>
+                    </td>
                 `;
+                row.dataset.productId = item.product_id; 
                 cartItemsTable.appendChild(row);
                 total += item.price * item.quantity;
             });
@@ -131,19 +177,29 @@
                 delivery: delivery
             };
 
-            fetch("/submit_checkout", {
+            fetch("/proceed-to-payment", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(checkoutData)
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Success:", data);
-                // Redirect or display a success message
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
+            .then(response => {
+    if (response.status === 201) {
+        // Payment was successful, refresh the page to show the rendered template
+        response.json().then(data => {
+            window.location.href = data.redirect_url;
+        });
+    } else {
+        // Payment was not successful, process the JSON message
+        response.json().then(data => {
+            console.log("Error:", data);
+            alert(data.message);
+        });
+    }
+})
+.catch(error => {
+    console.error("Error:", error);
+    alert("Error processing payment");
+});
         }
 
         populateCartItems();

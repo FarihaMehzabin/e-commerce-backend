@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+        input {
+            width: 100%;
+            padding: 5px;
+            margin: 5px 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <h1>Payment</h1>
+    <form id="payment-form">
+        <label for="cardholder-name">Cardholder Name:</label>
+        <input type="text" id="cardholder-name" pattern="[A-Za-z\s]+" required>
+        <br>
+        <label for="card-number">Card Number:</label>
+        <input type="text" id="card-number" pattern="\d{16}" required>
+        <br>
+        <label for="expiry-month">Expiry Month:</label>
+        <input type="number" id="expiry-month" min="1" max="12" required>
+        <br>
+        <label for="expiry-year">Expiry Year:</label>
+        <input type="number" id="expiry-year" min="2022" required>
+        <br>
+        <label for="cvc">CVC:</label>
+        <input type="text" id="cvc" pattern="\d{3}" required>
+        <br>
+        <button id="submit-button" type="submit">Pay</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            // Perform your desired action after form submission, e.g. send data to the server
+            alert("Payment submitted!");
+        });
+    </script>
+</body>
+</html>

@@ -77,10 +77,14 @@ class DbFunctions:
             # Check if the stored procedure affected any rows
             if affected_rows > 0:
                 print(f"Stored procedure '{proc}' executed successfully, affecting {affected_rows} row(s).")
+                
+                db_config.commit()
+                return True
+            
             else:
                 print(f"Stored procedure '{proc}' executed, but no rows were affected.")
-
-            db_config.commit()
+                db_config.commit()
+                return False
 
     def call_proc_fetch(self, proc):
         with self.DbConnection() as (cursor, db_config):
@@ -94,5 +98,18 @@ class DbFunctions:
                 data.extend(result.fetchall())
                 
             return data
-
         
+    def call_proc_with_result(self, proc, params):
+        with self.DbConnection() as (cursor, db_config):
+            
+            cursor.callproc(proc, params)
+           
+           # Fetch the returned result
+            result = None
+            for row in cursor.stored_results():
+                result = row.fetchone()  # Get the first column of the first row
+                    
+            
+            db_config.commit()
+            
+            return result

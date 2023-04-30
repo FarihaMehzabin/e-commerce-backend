@@ -13,11 +13,13 @@ from ecom_api.models.data_table_models.public_user.user_signup_request import (
 from ecom_api.models.data_table_models.public_user.user_login_request import (
     UserLoginRequestDataModel,
 )
+from ecom_api.models.data_table_models.public_user.create_order_request import CreateOrderRequestDataModel
 
 # Import services for user login, signup, and session handling
 from ecom_api.services.public_user.user_signup import UserSignupService
 from ecom_api.services.public_user.user_login import UserLoginService
 from ecom_api.services.public_user.user_session import UserSessionService
+from ecom_api.services.public_user.order import OrderService
 
 # Import response data models for user login, signup, and session handling
 from ecom_api.models.response_models.public_user.user_signup import UserSignupResponseModel
@@ -28,6 +30,7 @@ from ecom_api.models.response_models.public_user.create_user_session import (
 from ecom_api.models.response_models.public_user.check_user_session import (
     CheckUserSessionResponseModel,
 )
+from ecom_api.models.response_models.public_user.order_request import OrderRequestResponseModel
 
 # Instantiate the signup and login services
 signup_service = UserSignupService()
@@ -140,6 +143,35 @@ def public_users_routes(app):
         except Exception as err:
             print(traceback.format_exc())
             print(f"{err}")
+            
+    @app.route("/process-orders", methods=["POST"])
+    def process_orders():
+        try:
+            request_data = request.get_json()
+            
+            if not request_data:
+                return jsonify(error="Request body is empty or not in JSON format."), status.HTTP_400_BAD_REQUEST
+            
+            
+            order_request_data = CreateOrderRequestDataModel(request_data)
+            
+            order_service = OrderService()
+
+            response = order_service.create_order(order_request_data)
+            
+            if response[0]:
+                response_data = OrderRequestResponseModel(response[0], "Order placed successfully")
+                return jsonify(response_data.to_dict())
+
+            response_data = OrderRequestResponseModel(response[0], f"Insufficient stock for {response[2]}")
+
+            return jsonify(response_data.to_dict())
+
+        except Exception as err:
+            print(traceback.format_exc())
+            print(f"{err}")
+            
+    
 
 
     
