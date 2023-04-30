@@ -13,7 +13,7 @@ BEGIN
 
     -- Insert order into Order table
     INSERT INTO `order` (user_id, date, status, address_line_1, city, postcode)
-    VALUES (p_user_id, NOW(), 0, p_address_line_1, p_city, p_postcode);
+    VALUES (p_user_id, UTC_TIMESTAMP(), 0, p_address_line_1, p_city, p_postcode);
 
     -- Get the inserted order ID
     SET v_order_id = LAST_INSERT_ID();

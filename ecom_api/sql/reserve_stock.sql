@@ -33,7 +33,7 @@ BEGIN
     ELSE
       -- Insert the reserved stock information
       INSERT INTO reserved_products(user_id, product_id, reserved_quantity, time)
-      VALUES (user_id, current_product_id, current_quantity, NOW());
+      VALUES (user_id, current_product_id, current_quantity, UTC_TIMESTAMP());
     END IF;
 
     -- Increment the loop counter
