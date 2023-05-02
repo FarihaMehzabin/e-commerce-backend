@@ -9,7 +9,8 @@ BEGIN
   DECLARE cur CURSOR FOR
     SELECT product_id, reserved_quantity
     FROM reserved_products
-    WHERE TIMESTAMPDIFF(MINUTE, time, UTC_TIMESTAMP()) > 5;
+    WHERE TIMESTAMPDIFF(MINUTE, time, UTC_TIMESTAMP()) > 5
+    FOR UPDATE;
 
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 

@@ -16,8 +16,8 @@ def delete_expired_reservations():
     # Call the stored procedure to delete expired reservations
     cursor.callproc("delete_expired_reservations")
     result = None
-    for row in cursor.stored_results():
-        result = row.fetchone()[0]
+
+    result = cursor.stored_results().fetchone()[0]
         
     print(result)
 

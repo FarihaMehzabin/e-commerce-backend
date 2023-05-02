@@ -18,3 +18,9 @@ class OrderDB:
         result = self.db.call_proc_with_result('reserve_stock', (order.user_id, json.dumps(order.items),))
         
         return result
+    
+    def delete_reservations(self, user_id):
+        
+        result = self.db.call_proc_with_result('delete_reservations', (user_id,))
+        
+        return result

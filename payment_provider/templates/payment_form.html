@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mock Payment Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: normal;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #e5e5e5;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        function submitForm() {
+            const form = document.getElementById("payment-form");
+            const return_url = form.return.value;
+            const transaction_id = form.transaction_id.value;
+            const user_id = form.user_id.value  // Generate a unique transaction ID here
+            const new_url = return_url + "?transaction=" + transaction_id + "&user_id=" + user_id;
+            window.location = new_url;
+        }
+    </script>
+</head>
+<body>
+    <form id="payment-form">
+        <h1>Mock Payment Form</h1>
+        <input type="hidden" name="user_id" value="{{ user_id }}">
+        <input type="hidden" name="total" value="{{ total }}">
+        <input type="hidden" name="currency" value="{{ currency }}">
+        <input type="hidden" name="return" value="{{ return_url }}">
+        <input type="hidden" name="transaction_id" value="{{ transaction_id }}">
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="card">Card Number:</label>
+        <input type="text" id="card" name="card" required>
+
+        <button type="button" onclick="submitForm()">Submit Payment</button>
+    </form>
+</body>
+</html>

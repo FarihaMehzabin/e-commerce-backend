@@ -6,9 +6,16 @@ BEGIN
   DECLARE current_quantity INT;
   DECLARE items_length INT;
   DECLARE i INT DEFAULT 0;
+  DECLARE reserved_time TIMESTAMP;
+  
+  -- Generate the timestamp outside the loop so all our rows get 
+  -- the same time, and the polller will pick up all these rows as a whole group.
+  
+  SET reserved_time = UTC_TIMESTAMP();
 
   -- Get the length of the items array
   SET items_length = JSON_LENGTH(items_json);
+  
 
   -- Start a transaction
   START TRANSACTION;
@@ -33,7 +40,7 @@ BEGIN
     ELSE
       -- Insert the reserved stock information
       INSERT INTO reserved_products(user_id, product_id, reserved_quantity, time)
-      VALUES (user_id, current_product_id, current_quantity, UTC_TIMESTAMP());
+      VALUES (user_id, current_product_id, current_quantity, reserved_time);
     END IF;
 
     -- Increment the loop counter

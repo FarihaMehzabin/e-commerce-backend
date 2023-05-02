@@ -160,7 +160,7 @@ def public_users_routes(app):
             response = order_service.create_order(order_request_data)
             
             if response[0]:
-                response_data = OrderRequestResponseModel(response[0], "Order placed successfully")
+                response_data = OrderRequestResponseModel(response[0], "Order placed successfully", None , response[2])
                 return jsonify(response_data.to_dict())
 
             response_data = OrderRequestResponseModel(response[0], f"Insufficient stock for {response[2]}")
@@ -172,6 +172,24 @@ def public_users_routes(app):
             print(f"{err}")
             
     
+    @app.route("/delete-reservations", methods=["GET"])
+    def delete_reservations():
+        try:
+            user_id = request.args.get("user_id")
+            
+            order_service = OrderService()
+
+            response = order_service.delete_reservations(user_id)
+            
+            if response[0]:
+                return jsonify(success = True)
+            
+            return jsonify(success = False, message = response[1])
+            
+
+        except Exception as err:
+            print(traceback.format_exc())
+            print(f"{err}")
 
 
     

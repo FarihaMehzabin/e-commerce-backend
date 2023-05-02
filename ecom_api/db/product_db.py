@@ -25,6 +25,11 @@ class ProductDB:
 
         return data
     
+    def get_product_price_by_id(self, id):
+        data = self.db.fetch(f"SELECT price FROM product WHERE id = {id}")
+        
+        return data[0][0]
+    
     def add_product(self, product_data, company_id):
         sql = """
             INSERT INTO product (company_id, name, brand, price, unit, item_weight, product_description)
