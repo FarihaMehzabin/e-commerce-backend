@@ -17,9 +17,10 @@ def delete_expired_reservations():
     cursor.callproc("delete_expired_reservations")
     result = None
 
-    result = cursor.stored_results().fetchone()[0]
+    for row in cursor.stored_results():
+        result = row.fetchone()[0]
         
-    print(result)
+    print(f"time:{time.ctime()}: result")
 
     if result == 0:
         cnx.commit()

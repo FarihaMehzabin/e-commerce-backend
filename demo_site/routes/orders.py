@@ -32,7 +32,7 @@ def order_routes(app):
         
         if response_json['order_created']:
             
-            return_url = "http://localhost:2520/payment-return"
+            return_url = f"http://localhost:2520/payment-return?order_id={response_json['order_id']}"
 
             payment_url = f"http://localhost:8010?user_id={user_id}&total={response_json['total']}&currency=USD&return={return_url}"
 
@@ -45,6 +45,8 @@ def order_routes(app):
     def payment_return():
         transaction_id = request.args.get("transaction")
         user_id = request.args.get("user_id")
+        order_id = request.args.get("order_id")
+        
         transaction_status_url = f"http://localhost:8010/transaction-status?transaction={transaction_id}"
         
         print(transaction_status_url)
@@ -53,13 +55,14 @@ def order_routes(app):
         response = requests.get(transaction_status_url)
         transaction_data = response.json()
         
-        print(transaction_data)
 
         if transaction_data["result"] == "success":
             # Update the database with the transaction details and unlock reserved stock rows
-            reservation_response = requests.get(f"http://127.0.0.1:8080/delete-reservations?user_id={user_id}")
+            reservation_response = requests.get(f"http://127.0.0.1:8080/delete-reservations?user_id={user_id}&order_id={order_id}")
             
             reservation_response_json = reservation_response.json()
+            
+            print(reservation_response_json)
             
             if reservation_response_json["success"]:
                 return redirect("/payment-success", code=302)
@@ -81,7 +84,7 @@ def order_routes(app):
     
     @app.route("/product-stock-out", methods=["GET"])
     def refund_page():
-        message = requests.args.get("message")
+        message = request.args.get("message")
         
         return message
         

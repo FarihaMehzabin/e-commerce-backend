@@ -160,10 +160,10 @@ def public_users_routes(app):
             response = order_service.create_order(order_request_data)
             
             if response[0]:
-                response_data = OrderRequestResponseModel(response[0], "Order placed successfully", None , response[2])
+                response_data = OrderRequestResponseModel(response[0], response[3], "Order placed successfully", None , response[2])
                 return jsonify(response_data.to_dict())
 
-            response_data = OrderRequestResponseModel(response[0], f"Insufficient stock for {response[2]}")
+            response_data = OrderRequestResponseModel(response[0], response[3],f"Insufficient stock for {response[2]}")
 
             return jsonify(response_data.to_dict())
 
@@ -176,10 +176,11 @@ def public_users_routes(app):
     def delete_reservations():
         try:
             user_id = request.args.get("user_id")
+            order_id = request.args.get("order_id")
             
             order_service = OrderService()
 
-            response = order_service.delete_reservations(user_id)
+            response = order_service.delete_reservations(user_id, order_id)
             
             if response[0]:
                 return jsonify(success = True)

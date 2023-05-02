@@ -64,7 +64,7 @@
             const return_url = form.return.value;
             const transaction_id = form.transaction_id.value;
             const user_id = form.user_id.value  // Generate a unique transaction ID here
-            const new_url = return_url + "?transaction=" + transaction_id + "&user_id=" + user_id;
+            const new_url = return_url + "&transaction=" + transaction_id + "&user_id=" + user_id;
             window.location = new_url;
         }
     </script>
