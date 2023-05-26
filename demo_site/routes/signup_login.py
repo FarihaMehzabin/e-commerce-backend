@@ -29,8 +29,10 @@ def signup_login_routes(app):
             # Check if the user is already logged in (valid cookie)
             cookie_validity, is_cookie_valid, user_id = cookie_service.check_cookie()
             
-            if is_cookie_valid:
+            if cookie_validity:
                 # Redirect to the index page if the user is already logged in
+                
+                print("user already logged in", cookie_validity, is_cookie_valid)
                 return redirect(url_for("index"))
 
             # Render the login page if the user is not logged in

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Stock Out</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="jumbotron mt-5">
+            <h1 class="display-4">Product Stock Out</h1>
+            <p class="lead" id="message"></p>
+            <hr class="my-4">
+            <a class="btn btn-primary btn-lg" href="/" role="button">Go back to home</a>
+        </div>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get("message");
+        document.getElementById("message").innerText = message;
+    </script>
+</body>
+</html>

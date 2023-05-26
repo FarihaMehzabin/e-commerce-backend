@@ -1,4 +1,5 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `check_reservations`(IN user_id INT, IN order_id INT)
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `process_paid_orders`(IN user_id INT, IN order_id INT)
 BEGIN
  -- Declare a variable to store the row count
   DECLARE reservation_count INT;
@@ -14,15 +15,21 @@ BEGIN
     DELETE FROM reserved_products
     WHERE user_id = user_id;
     
-
+   IF ROW_COUNT() > 0 THEN
   -- Update the order status to paid
     UPDATE `order`
     SET status = 1
     WHERE user_id = user_id AND id = order_id;
     
     SELECT 0 AS "Result";
+   ELSE 
+    SELECT -1 AS "Result";
+    
+   END IF;
+   
   ELSE
    SELECT -1 AS "Result";
   END IF;
 
-END
+END$$
+DELIMITER ;

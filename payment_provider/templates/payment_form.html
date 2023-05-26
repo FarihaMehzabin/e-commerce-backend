@@ -58,19 +58,9 @@
             background-color: #0056b3;
         }
     </style>
-    <script>
-        function submitForm() {
-            const form = document.getElementById("payment-form");
-            const return_url = form.return.value;
-            const transaction_id = form.transaction_id.value;
-            const user_id = form.user_id.value  // Generate a unique transaction ID here
-            const new_url = return_url + "&transaction=" + transaction_id + "&user_id=" + user_id;
-            window.location = new_url;
-        }
-    </script>
 </head>
 <body>
-    <form id="payment-form">
+    <form id="payment-form" method="POST" action="/submit-payment">
         <h1>Mock Payment Form</h1>
         <input type="hidden" name="user_id" value="{{ user_id }}">
         <input type="hidden" name="total" value="{{ total }}">
@@ -84,7 +74,7 @@
         <label for="card">Card Number:</label>
         <input type="text" id="card" name="card" required>
 
-        <button type="button" onclick="submitForm()">Submit Payment</button>
+        <button type="submit">Submit Payment</button>
     </form>
 </body>
 </html>

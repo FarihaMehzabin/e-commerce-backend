@@ -1,7 +1,6 @@
-DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `reserve_stock`(IN user_id INT, IN items_json TEXT)
 BEGIN
-  DECLARE done BOOLEAN DEFAULT FALSE;
+  DECLARE cancel BOOLEAN DEFAULT FALSE;
   DECLARE current_product_id INT;
   DECLARE current_quantity INT;
   DECLARE items_length INT;
@@ -21,7 +20,7 @@ BEGIN
   START TRANSACTION;
 
   -- Loop through the items
-  WHILE i < items_length AND NOT done DO
+  WHILE i < items_length AND NOT cancel DO
     -- Get the product_id and quantity for the current item
     SET current_product_id = JSON_EXTRACT(items_json, CONCAT('$[', i, '].product_id'));
     SET current_quantity = JSON_EXTRACT(items_json, CONCAT('$[', i, '].quantity'));
@@ -36,7 +35,7 @@ BEGIN
       -- Insufficient stock, rollback the transaction
       ROLLBACK;
       SELECT -1 AS "Result", current_product_id AS "ProductID";
-      SET done = TRUE;
+      SET cancel = TRUE;
     ELSE
       -- Insert the reserved stock information
       INSERT INTO reserved_products(user_id, product_id, reserved_quantity, time)
@@ -47,10 +46,9 @@ BEGIN
     SET i = i + 1;
   END WHILE;
 
-  -- Commit the transaction if not done
-  IF NOT done THEN
+  -- Commit the transaction if not cancel
+  IF NOT cancel THEN
     COMMIT;
     SELECT 0 AS "Result";
   END IF;
-END$$
-DELIMITER ;
+END

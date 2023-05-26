@@ -1,10 +1,7 @@
 import traceback
 from flask import request, jsonify
 from flask_api import status
-import logging
 
-# Configure the logging
-logging.basicConfig(level=logging.ERROR)
 
 # Import request data models for user login and signup
 from ecom_api.models.data_table_models.public_user.user_signup_request import (
@@ -32,10 +29,12 @@ from ecom_api.models.response_models.public_user.check_user_session import (
 )
 from ecom_api.models.response_models.public_user.order_request import OrderRequestResponseModel
 
+from ecom_api.logger import Logger
+
 # Instantiate the signup and login services
 signup_service = UserSignupService()
 login_service = UserLoginService()
-
+logger = Logger()
 
 def public_users_routes(app):
     # Route for user login
@@ -45,6 +44,7 @@ def public_users_routes(app):
             request_data = request.get_json()
             
             if not request_data:
+                logger.warning("Request body is empty or not in JSON format")
                 return jsonify(error="Request body is empty or not in JSON format."), status.HTTP_400_BAD_REQUEST
             
             # Parse and validate user login data
@@ -52,6 +52,8 @@ def public_users_routes(app):
 
             # If the user data is invalid, return an error message
             if not user_data.isValid():
+                logger.warning(f"User data is invalid. {user_data.error_message}")
+                
                 return jsonify(error=user_data.error_message), 400
 
             # Call the login service with the validated user data
@@ -64,9 +66,8 @@ def public_users_routes(app):
             return jsonify(response_data.to_dict())
 
         except Exception as err:
-            print(traceback.format_exc())
-            logging.error(f"An unexpected error occurred: {err}")
-            return jsonify(error="An unexpected error occurred. Please contact the support team."), status.HTTP_500_INTERNAL_SERVER_ERROR
+            logger.error(f"An unexpected error occurred in user-login route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
     # Route for user signup
     @app.route("/user-signup", methods=["POST"])
@@ -76,6 +77,7 @@ def public_users_routes(app):
             request_data = request.get_json()
             
             if not request_data:
+                logger.warning("Request body is empty or not in JSON format")
                 return jsonify(error="Request body is empty or not in JSON format."), status.HTTP_400_BAD_REQUEST
             
             # Parse and validate user signup data
@@ -95,9 +97,8 @@ def public_users_routes(app):
             return jsonify(response_data.to_dict())
 
         except Exception as err:
-            print(traceback.format_exc())
-            logging.error(f"An unexpected error occurred: {err}")
-            return jsonify(error="An unexpected error occurred. Please contact the support team."), 500
+            logger.error(f"An unexpected error occurred in user-signup route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
     # Route for creating a user session
     @app.route("/user/create-session/<user_id>", methods=["POST"])
@@ -110,6 +111,7 @@ def public_users_routes(app):
             response = user_session_service.create_session(user_id)
 
             if not response:
+                logger.warning("Failed to create session")
                 return jsonify({"error": "Failed to create session"}), 500
             
             # Create a response data model object with the new session GUID
@@ -119,8 +121,8 @@ def public_users_routes(app):
             return jsonify(response_data.to_dict())
 
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in create-session route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "Failed to create session"}), 500
 
     # Route for checking the validity of a user cookie
     @app.route("/user/check-cookie-validity/<guid>", methods=["POST"])
@@ -141,10 +143,10 @@ def public_users_routes(app):
             return jsonify(response_data.to_dict())
 
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in check-cookie-validity route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "Failed to check cookie"}), 500
             
-    @app.route("/process-orders", methods=["POST"])
+    @app.route("/create-order", methods=["POST"])
     def process_orders():
         try:
             request_data = request.get_json()
@@ -168,11 +170,11 @@ def public_users_routes(app):
             return jsonify(response_data.to_dict())
 
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in create-order route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "Failed to create an order"}), 500
             
     
-    @app.route("/delete-reservations", methods=["GET"])
+    @app.route("/process-paid-orders", methods=["GET"])
     def delete_reservations():
         try:
             user_id = request.args.get("user_id")
@@ -180,7 +182,7 @@ def public_users_routes(app):
             
             order_service = OrderService()
 
-            response = order_service.delete_reservations(user_id, order_id)
+            response = order_service.process_paid_orders(user_id, order_id)
             
             if response[0]:
                 return jsonify(success = True)
@@ -189,8 +191,6 @@ def public_users_routes(app):
             
 
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
-
-
+            logger.error(f"An unexpected error occurred in process-paid-orders route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "Failed to process the order"}), 500
     

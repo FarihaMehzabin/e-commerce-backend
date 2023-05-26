@@ -1,10 +1,8 @@
 import traceback
 from flask import request, jsonify
 from flask_api import status
-import logging
+from ecom_api.logger import Logger
 
-# Configure the logging
-logging.basicConfig(level=logging.ERROR)
 
 # Import request data models for handling company login and signup requests
 from ecom_api.models.data_table_models.company.company_login_request import (
@@ -32,6 +30,7 @@ from ecom_api.services.company.company_signup import CompanySignupService
 # Instantiate the company signup and login services
 signup_service = CompanySignupService()
 login_service = CompanyLoginService()
+logger = Logger()
 
 # Define company users routes
 def company_users_routes(app):
@@ -57,15 +56,15 @@ def company_users_routes(app):
 
             # Create a response data model object with the signup response
             response_data = CompanySignupResponseModel(signup_response)
+            
+            print(response_data.to_dict())
 
             # Return the response data as JSON
             return jsonify(response_data.to_dict())
 
         except Exception as err:
-            print(traceback.format_exc())
-            logging.error(f"An unexpected error occurred: {err}")
-            return jsonify(error="An unexpected error occurred. Please contact the support team."), status.HTTP_500_INTERNAL_SERVER_ERROR
-
+            logger.error(f"An unexpected error occurred in company-user-signup route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
     # Route for company user login
     @app.route("/company/user/login", methods=["POST"])
@@ -88,8 +87,8 @@ def company_users_routes(app):
             return jsonify(response_data.to_dict())
 
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in company-user-login route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
     # Route for creating a company session
     @app.route("/company/create-session/<comp_id>", methods=["POST"])
@@ -111,9 +110,9 @@ def company_users_routes(app):
             return jsonify(response_data.to_dict())
 
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
-
+            logger.error(f"An unexpected error occurred in company-create-session route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
+    
     # Route for checking the validity of a company cookie
     @app.route("/company/check-cookie-validity/<guid>", methods=["POST"])
     def check_cookie_validity_comp(guid):
@@ -133,7 +132,7 @@ def company_users_routes(app):
             return jsonify(response_data.to_dict())
 
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in company-check-cookie route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
 

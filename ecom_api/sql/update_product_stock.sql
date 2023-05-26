@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `check_for_products_without_reservations`(IN user_id INT, IN order_id INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_product_stock`(IN user_id INT, IN order_id INT)
 BEGIN
   -- Declare necessary variables
   DECLARE current_product_id INT;
@@ -29,6 +29,11 @@ BEGIN
     IF ROW_COUNT() <= 0 THEN
       -- Insufficient stock, rollback the transaction
       ROLLBACK;
+
+      UPDATE `order`
+    SET status = 5
+    WHERE user_id = user_id AND id = order_id;
+    
       SELECT -1 AS "Result", current_product_id AS "ProductID";
       SET done = TRUE;
     ELSE
@@ -43,6 +48,11 @@ BEGIN
   -- Commit the transaction if not done
   IF NOT done THEN
     COMMIT;
+
+    UPDATE `order`
+    SET status = 1
+    WHERE user_id = user_id AND id = order_id;
+    
     SELECT 0 AS "Result";
   END IF;
 

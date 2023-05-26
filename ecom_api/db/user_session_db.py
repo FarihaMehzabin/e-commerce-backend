@@ -1,32 +1,44 @@
 import traceback
 from ecom_api.services.db_functions import DbFunctions 
+from ecom_api.logger import Logger
 
 class UserSessionDB:
     def __init__(self):
         self.db = DbFunctions()
+        self.logger = Logger()
 
-    # Create a new session with the provided hashed GUID and user ID
     def create_session(self, hashed_guid, user_id):
         try:
             self.db.insert(
                 f"INSERT INTO session (guid, user_id) VALUES (%s, %s)", (hashed_guid, user_id)
             )
+            self.logger.info("Session created successfully.")
             return True
-        except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
-            return False
+        except Exception as e:
+            self.logger.error(f"Error creating session. Error: {e}")
+            raise
 
-    # Get session details by GUID
     def get_session_by_guid(self, guid):
-        res = self.db.fetch(
-            f"SELECT guid, user_id FROM session WHERE guid = '{guid}'"
-        )
-        return res[0] if res else None
-
-    # Get user details by user ID
-    def get_user_by_id(self, user_id):
-        res = self.db.fetch(
-            f"SELECT first_name, last_name FROM user WHERE id = '{user_id}'"
-        )
-        return res[0] if res else None
+        try:
+            res = self.db.fetch(
+            f"""
+            SELECT 
+                session.guid, 
+                session.user_id, 
+                user.first_name, 
+                user.last_name 
+            FROM 
+                session 
+            INNER JOIN 
+                user 
+            ON 
+                session.user_id = user.id
+            WHERE 
+                session.guid = '{guid}'
+            """
+            )
+            self.logger.info(f"Retrieved session with guid: {guid}")
+            return res[0] if res else None
+        except Exception as e:
+            self.logger.error(f"Error retrieving session with guid: {guid}. Error: {e}")
+            raise

@@ -1,92 +1,94 @@
-import traceback
-from flask import request, jsonify, render_template,url_for, redirect
+from flask import jsonify, render_template, url_for, redirect, request
 import requests
 from services.cookies import Cookies
-
-
+from logger import Logger
+from services.orders import OrderService
 
 cookie = Cookies()
-
+logger = Logger()
 
 def order_routes(app):
     @app.route("/checkout", methods=["GET"])
     def show_checkout_page():
+        try:
+            return render_template("checkout.html")
         
-        return render_template("checkout.html")
+        except Exception as e:
+            logger.error("Error in show_checkout_page: {}".format(e))
+            return jsonify({"message": "Server error"}), 500
 
-
-    @app.route("/proceed-to-payment", methods=["POST"])
+    @app.route("/create-order", methods=["POST"])
     def proceed_to_payment():
-        checkout_data = request.get_json()
-        
-        user_logged, user_not_logged, user_id = cookie.check_cookie()
-        
-        checkout_data["user_id"] = user_id
-        
-        response = requests.post(
-                f"http://127.0.0.1:8080/process-orders", 
-                json = checkout_data
-            )
-        
-        response_json = response.json()
-        
-        if response_json['order_created']:
+        try:
+            checkout_data = request.get_json()
             
-            return_url = f"http://localhost:2520/payment-return?order_id={response_json['order_id']}"
-
-            payment_url = f"http://localhost:8010?user_id={user_id}&total={response_json['total']}&currency=USD&return={return_url}"
-
-            return jsonify({"redirect_url": payment_url}), 201
+            _, _, user_id = cookie.check_cookie()
+                        
+            checkout_data["user_id"] = user_id
+                        
+            order_service = OrderService()
+            
+            order_created, response = order_service.create_order(checkout_data)
+            
+            if order_created:
+                return jsonify(response), 201
+            
+            return jsonify(response), 400
         
-        return jsonify({"message": response.json()['message']})
-        
-  
+        except Exception as e:
+            logger.error("Error in proceed_to_payment: {}".format(e))
+            
+            return jsonify({"message": "Server error"}), 500
+
     @app.route("/payment-return", methods=["GET"])
     def payment_return():
-        transaction_id = request.args.get("transaction")
-        user_id = request.args.get("user_id")
-        order_id = request.args.get("order_id")
+        try:
+            transaction_id = request.args.get("transaction")
+            user_id = request.args.get("user_id")
+            order_id = request.args.get("order_id")
+            
+            transaction_status_url = f"http://localhost:8010/transaction-status?transaction={transaction_id}"
+            
+            order_service = OrderService()
+            
+            redirect_url, code = order_service.payment_return(transaction_status_url, user_id, order_id)
+            
+            return redirect(redirect_url, code=code)
         
-        transaction_status_url = f"http://localhost:8010/transaction-status?transaction={transaction_id}"
-        
-        print(transaction_status_url)
+        except Exception as e:
+            logger.error("Error in payment_return: {}".format(e))
+            return jsonify({"message": "Server error"}), 500
 
-        # Call the transaction_status endpoint to verify the transaction
-        response = requests.get(transaction_status_url)
-        transaction_data = response.json()
-        
-
-        if transaction_data["result"] == "success":
-            # Update the database with the transaction details and unlock reserved stock rows
-            reservation_response = requests.get(f"http://127.0.0.1:8080/delete-reservations?user_id={user_id}&order_id={order_id}")
-            
-            reservation_response_json = reservation_response.json()
-            
-            print(reservation_response_json)
-            
-            if reservation_response_json["success"]:
-                return redirect("/payment-success", code=302)
-            
-            return redirect(url_for('refund_page', message = reservation_response_json['message']))
-        else:
-            return redirect("/payment-error", code=302)
-
-
+    
     @app.route("/payment-success", methods=["GET"])
     def payment_success():
-        return "Hey, your payment worked, your order is placed, thanks!"
+        try:
+            
+            return render_template('payment_success.html')
+        
+        except Exception as e:
+            logger.error("Error in payment_success: {}".format(e))
+            return jsonify({"message": "Server error"}), 500
 
-
+    
     @app.route("/payment-error", methods=["GET"])
     def payment_error():
-        return "Sorry, there was an error with your payment."
-    
+        try:
+            
+            return render_template('payment_error.html')
+        
+        except Exception as e:
+            logger.error("Error in payment_error: {}".format(e))
+            return jsonify({"message": "Server error"}), 500
+
     
     @app.route("/product-stock-out", methods=["GET"])
     def refund_page():
-        message = request.args.get("message")
+        try:
+            
+            return render_template('refund_page.html')
         
-        return message
-        
-
+        except Exception as e:
+            logger.error("Error in refund_page: {}".format(e))
+            return jsonify({"message": "Server error"}), 500
 

@@ -1,0 +1,5 @@
+CREATE TABLE `country` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `country` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=249 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

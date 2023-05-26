@@ -73,7 +73,6 @@ def products_routes(app):
                 "item_weight": form_data["item_weight"],
                 "product_description": form_data["product_description"],
                 "selected_category_ids": request.form.getlist('categories')
-                # Add any other required fields
             }
             
             print(product_data)
@@ -123,6 +122,8 @@ def products_routes(app):
                 "selected_category_ids": request.form.getlist('categories')
                 # Add any other required fields
             }
+            
+            print(product_data)
 
             # Send the new product data to the backend
             response = requests.post(f"http://127.0.0.1:8080/company/{company_id}/products/add", json=product_data)

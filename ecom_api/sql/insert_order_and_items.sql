@@ -31,5 +31,7 @@ BEGIN
 
         SET v_index = v_index + 1;
     END WHILE;
+    
+	SELECT v_order_id AS "OrderID";
 END$$
 DELIMITER ;

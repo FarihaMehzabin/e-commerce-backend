@@ -5,23 +5,23 @@ class Logger:
         self.enable_debug = False
         self.enable_info = True
 
-    def error(self, message, source = "ecom_api", user_id=None):
+    def error(self, message, source = "demo_site", user_id=None):
         self._log("ERROR", message, source, user_id)
 
-    def warning(self, message, source = "ecom_api", user_id=None):
+    def warning(self, message, source = "demo_site", user_id=None):
         self._log("WARNING", message, source, user_id)
 
-    def info(self, message, source = "ecom_api", user_id=None):
+    def info(self, message, source = "demo_site", user_id=None):
         self._log("INFO", message, source, user_id, insert=self.enable_info)
 
-    def debug(self, message, source = "ecom_api", user_id=None):
+    def debug(self, message, source = "demo_site", user_id=None):
         self._log("DEBUG", message, source, user_id, insert=self.enable_debug)
     
-    def critical(self, message, source = "ecom_api", user_id=None):
+    def critical(self, message, source = "demo_site", user_id=None):
         self._log("CRITICAL", message, source, user_id)
 
     def _log(self, severity, message, source, user_id, insert=True):
-        from ecom_api.services.db_functions import DbFunctions  # Local import
+        from ecom_api.services.db_functions import DbFunctions  
         self.db_functions = DbFunctions()
 
         severity_map = {

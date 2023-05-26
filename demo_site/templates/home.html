@@ -152,7 +152,7 @@
 <body> 
   <header>
         {% if user_logged %}
-            <h3>{{ user_logged }}!</h3>
+            <h3>{{ message }}!</h3>
         {% else %}
              <section>
                 <a href="{{ url_for('show_login_page') }}">Login</a>

@@ -1,11 +1,11 @@
 import traceback
 from flask import jsonify, request
-from ecom_api.db.product_db import ProductDB
-from ecom_api.models.data_table_models.company import product_category
 from ecom_api.services.company.product import ProductService
+from ecom_api.logger import Logger
 
 
 product_service = ProductService()
+logger = Logger()
 
 
 def products_routes(app):
@@ -16,14 +16,12 @@ def products_routes(app):
         """
         try:
             products = product_service.get_all_products()
-            
-            print(products)
 
             return jsonify(products=products)
 
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in get-all-products route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
     @app.route("/company/<id>/products", methods=["GET"])
     def show_company_products(id):
@@ -39,19 +37,23 @@ def products_routes(app):
             return jsonify(products=products)
 
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in show-company-products route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
     @app.route("/company/products/<product_id>", methods=["GET"])
     def get_product(product_id):
         """
         Fetch and return the product data for a specific product.
         """
-        # Fetch the product data from the database
-        product = product_service.get_product_by_id(product_id)
+        try:
+            # Fetch the product data from the database
+            product = product_service.get_product_by_id(product_id)
 
-        # Return the product data as JSON
-        return jsonify(product=product)
+            return jsonify(product=product)
+        
+        except Exception as err:
+            logger.error(f"An unexpected error occurred in get-product route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
     @app.route("/company/<company_id>/products/add", methods=["POST"])
     def add_product(company_id):
@@ -60,6 +62,8 @@ def products_routes(app):
         """
         try:
             new_product_data = request.get_json()
+            
+            print(new_product_data)
 
             product_id = product_service.add_product(new_product_data, company_id)
 
@@ -68,8 +72,8 @@ def products_routes(app):
 
             return jsonify(message="Product added successfully", product_id=product_id)
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in add-product route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
     @app.route("/company/products/<product_id>/edit", methods=["PUT"])
     def edit_product(product_id):
@@ -87,8 +91,8 @@ def products_routes(app):
             return jsonify(message="Product updated successfully")
         
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in edit-product route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
     @app.route("/company/products/<product_id>/delete", methods=["DELETE"])
     def delete_product(product_id):
@@ -102,5 +106,5 @@ def products_routes(app):
 
             return jsonify(message="Product deleted successfully")
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in delete-product route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500

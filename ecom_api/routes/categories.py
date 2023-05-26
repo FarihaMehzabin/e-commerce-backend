@@ -1,27 +1,15 @@
 import traceback
 from flask import request, jsonify
 from ecom_api.services.company.categories import CategoryService
-
+from ecom_api.logger import Logger
 
 category_service = CategoryService()
+logger = Logger()
 
 def categories_routes(app): 
     
     @app.route("/company/categories", methods=['POST'])
     def add_category():
-        """
-        Add a new category for products.
-
-        Request JSON:
-        {
-            "category_name": "<category_name>"
-        }
-
-        Response JSON:
-        {
-            "message": "new category added",
-        }
-        """
         try:
             data = request.get_json()
 
@@ -35,8 +23,8 @@ def categories_routes(app):
             return jsonify(message="new category added"), 201
 
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in add-categories route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
 
     @app.route("/company/categories/<string:category_name>", methods=['PUT'])
@@ -66,8 +54,8 @@ def categories_routes(app):
             return jsonify(message=message), 201
 
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in editing-categories route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
 
     @app.route("/company/categories/<string:category_name>", methods=['DELETE'])
@@ -86,8 +74,8 @@ def categories_routes(app):
             return jsonify(message="category deleted successfully"), 201
 
         except Exception as err:
-            print(traceback.format_exc())
-            print(f"{err}")
+            logger.error(f"An unexpected error occurred in deleting-categories route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500
 
 
     @app.route('/company/categories', methods=['GET'])
@@ -106,6 +94,11 @@ def categories_routes(app):
             ]
         }
         """
-        category_list = category_service.category_list()
+        try:
+            category_list = category_service.category_list()
 
-        return jsonify(category_list=category_list), 201
+            return jsonify(category_list=category_list), 201
+        
+        except Exception as err:
+            logger.error(f"An unexpected error occurred in get-all-categories route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "An unexpected error occurred. Please contact the support team."}), 500

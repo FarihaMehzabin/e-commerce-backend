@@ -7,8 +7,8 @@ class Cookies:
     def check_cookie(self):
         cookie_check = self.get_cookie()
 
-        message = ""
-        err_message = ""
+        message = "No session found"
+        user_logged = False
         user_id = ""
 
         if cookie_check:
@@ -16,11 +16,11 @@ class Cookies:
 
             if cookie_validity:
                 message = cookie_validity.data.decode('utf-8')
-                err_message = True
-            else:
-                err_message = False
+                user_logged = True
+            
+        print(message, user_logged, user_id)
 
-        return message, err_message, user_id
+        return user_logged, message, user_id
 
     # Set a new cookie with the user_id as a parameter
     def set_cookie(self, user_id):
@@ -47,7 +47,7 @@ class Cookies:
         if res["session_validity"] == True:
             return make_response(f"welcome {res['username']}"), res["user_id"]
         else:
-            return False
+            return False, ""
 
     # Return a cookie for the user, redirecting them to the index page
     def return_cookie(self, user_data):

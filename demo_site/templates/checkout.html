@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,31 +18,11 @@
             margin-top: 1rem;
             margin-bottom: 1rem;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 2rem;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            text-align: left;
-            padding: 0.5rem;
-        }
-        th {
-            background-color: #333;
-            color: white;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            margin-top: 1rem;
-            margin-bottom: 0.25rem;
-        }
-        input, select, button {
-            font-size: 1rem;
-            padding: 0.25rem;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            background-color: #fff;
         }
         button {
             background-color: #333;
@@ -58,44 +39,46 @@
     </style>
 </head>
 <body>
-    <h1>Checkout</h1>
-    <table id="cart-items">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Price per unit</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Cart items will be populated here -->
-        </tbody>
-    </table>
-    <h2>Total: $<span id="total"></span></h2>
+    <div class="container">
+        <h1>Checkout</h1>
+        <table class="table table-bordered" id="cart-items">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price per unit</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Cart items will be populated here -->
+            </tbody>
+        </table>
+        <h2>Total: $<span id="total"></span></h2>
 
-    <form id="checkout-form" onsubmit="submitCheckoutForm(event)">
-        <div>
-            <label for="address">Address:</label>
-            <input type="text" id="address" name="address" required>
-        </div>
-        <div>
-            <label for="city">City:</label>
-            <input type="text" id="city" name="city" required>
-        </div>
-        <div>
-            <label for="postcode">Postcode:</label>
-            <input type="text" id="postcode" name="postcode" required>
-        </div>
-        <div>
-            <label for="billing">Billing Method:</label>
-            <select id="billing" name="billing">
-                <option value="card">Card</option>
-                <option value="paypal">PayPal</option>
-            </select>
-        </div>
-        <button type="submit">Continue to Payment</button>
-    </form>
+        <form id="checkout-form" onsubmit="submitCheckoutForm(event)">
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" class="form-control" id="address" name="address" required>
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" class="form-control" id="city" name="city" required>
+            </div>
+            <div class="form-group">
+                <label for="postcode">Postcode:</label>
+                <input type="text" class="form-control" id="postcode" name="postcode" required>
+            </div>
+            <div class="form-group">
+                <label for="billing">Billing Method:</label>
+                <select class="form-control" id="billing" name="billing">
+                    <option value="card">Card</option>
+                    <option value="paypal">PayPal</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Continue to Payment</button>
+        </form>
+    </div>
 
     <script>
         function updateTotal() {
@@ -177,7 +160,7 @@ console.log("productId:", productId);
                 delivery: delivery
             };
 
-            fetch("/proceed-to-payment", {
+            fetch("/create-order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(checkoutData)

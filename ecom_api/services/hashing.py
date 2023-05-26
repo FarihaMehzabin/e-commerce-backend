@@ -1,6 +1,9 @@
 import hashlib
 import os
 from dotenv import load_dotenv
+from ecom_api.logger import Logger
+
+logger = Logger()
 
 load_dotenv()
 
@@ -26,17 +29,13 @@ class Hashing:
         
         hex_hash = digest.hex()
         
-        print(f"stored hash is {hash}")
-        
-        print(f"hashed pass is {hex_hash}")
-        
         if hash == hex_hash:
             
-            print("Pass match")
+            logger.info("Pass match")
             
             return True
         
-        print("Pass dont match")
+        logger.warning("Pass dont match")
             
         return False
     
