@@ -56,8 +56,7 @@ def company_users_routes(app):
 
             # Create a response data model object with the signup response
             response_data = CompanySignupResponseModel(signup_response)
-            
-            print(response_data.to_dict())
+        
 
             # Return the response data as JSON
             return jsonify(response_data.to_dict())

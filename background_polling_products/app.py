@@ -2,11 +2,13 @@ from flask import Flask
 import time
 import mysql.connector
 
+
 config = {
     "DEBUG": True,  # some Flask specific configs
 }
 
 app = Flask(__name__)
+
 
 def delete_expired_reservations():
     # Replace with your own database credentials
@@ -35,6 +37,7 @@ def run_background_script():
         print("Running background script...")
         delete_expired_reservations()
         time.sleep(60)  # Wait for 60 seconds before running again
+
 
 
 if __name__ == "__main__":

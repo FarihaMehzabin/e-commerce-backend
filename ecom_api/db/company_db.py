@@ -22,8 +22,8 @@ class CompanyDB:
         try:
             hashed_pass = self.hash.hash_pass(company.password)
             rowcount, id = self.db.insert(
-                f"INSERT INTO company (name, username, password) VALUES (%s, %s, %s)",
-                (company.company, company.username, hashed_pass),
+                f"INSERT INTO company (name, username, password, email) VALUES (%s, %s, %s, %s)",
+                (company.company, company.username, hashed_pass, company.email),
             )
             self.logger.info(f"Successfully created company user. Company id is {id}")
             return rowcount, id

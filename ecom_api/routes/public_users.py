@@ -174,7 +174,7 @@ def public_users_routes(app):
             return jsonify({"error": "Failed to create an order"}), 500
             
     
-    @app.route("/process-paid-orders", methods=["GET"])
+    @app.route("/process-paid-orders/refund-check", methods=["GET"])
     def delete_reservations():
         try:
             user_id = request.args.get("user_id")
@@ -182,7 +182,7 @@ def public_users_routes(app):
             
             order_service = OrderService()
 
-            response = order_service.process_paid_orders(user_id, order_id)
+            response = order_service.process_paid_orders_reservations(user_id, order_id)
             
             if response[0]:
                 return jsonify(success = True)
@@ -191,6 +191,23 @@ def public_users_routes(app):
             
 
         except Exception as err:
-            logger.error(f"An unexpected error occurred in process-paid-orders route | Error: {err} | Traceback: {traceback.format_exc()}")
+            logger.error(f"An unexpected error occurred in process-paid-orders/refund-check route | Error: {err} | Traceback: {traceback.format_exc()}")
             return jsonify({"error": "Failed to process the order"}), 500
+        
+    
+    @app.route("/process-paid-orders/delivery", methods=["POST"])
+    def process_delivery():
+        try:
+            user_id = request.args.get("user_id")
+            order_id = request.args.get("order_id")
+            
+            order_service = OrderService()
+
+            response = order_service.process_paid_orders_delivery(order_id, user_id)
+                        
+            return jsonify(success = True, message = "Delivery in progress"), 200
+
+        except Exception as err:
+            logger.error(f"An unexpected error occurred in process-paid-orders/process-delivery route | Error: {err} | Traceback: {traceback.format_exc()}")
+            return jsonify({"error": "Failed to process the delivery for the order"}), 500
     

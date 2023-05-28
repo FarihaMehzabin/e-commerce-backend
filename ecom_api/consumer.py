@@ -22,7 +22,6 @@ while running:
     message = consumer.poll()
     
     
-    
     for msg in consumer:  
       
       db = mysql.connector.connect(

@@ -85,11 +85,10 @@ def signup_login_routes(app):
                 request.form["lastname"],
                 request.form["u"],
                 request.form["p"],
+                request.form["email"],
             )
             # Attempt to create a new user
             res = signup_service.create_user(user_signup_data)
-            
-            print(res)
 
             if res["error"]:
                 # Display an error message if the signup failed

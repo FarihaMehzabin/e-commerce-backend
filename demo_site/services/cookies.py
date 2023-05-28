@@ -15,16 +15,16 @@ class Cookies:
             cookie_validity, user_id = self.check_cookie_validity()
 
             if cookie_validity:
-                message = cookie_validity.data.decode('utf-8')
+                message = cookie_validity.data.decode("utf-8")
                 user_logged = True
-            
+
         print(message, user_logged, user_id)
 
         return user_logged, message, user_id
 
     # Set a new cookie with the user_id as a parameter
     def set_cookie(self, user_id):
-        data = requests.post(f"http://127.0.0.1:8080/user/create-session/{user_id}")
+        data = requests.post(f"http://127.0.0.1:8081/user/create-session/{user_id}")
         res = data.json()
         response = make_response()
         response.set_cookie("session", res["guid"])
@@ -41,7 +41,7 @@ class Cookies:
     # Check if the cookie is valid, returning a response with the username message if valid, or False if not valid
     def check_cookie_validity(self):
         guid = request.cookies.get("session")
-        data = requests.post(f"http://127.0.0.1:8080/user/check-cookie-validity/{guid}")
+        data = requests.post(f"http://127.0.0.1:8081/user/check-cookie-validity/{guid}")
         res = data.json()
 
         if res["session_validity"] == True:

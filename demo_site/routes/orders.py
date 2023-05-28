@@ -64,6 +64,17 @@ def order_routes(app):
     def payment_success():
         try:
             
+            user_id = request.args.get("user_id")
+            order_id = request.args.get("order_id")
+            
+            order_service = OrderService()
+            
+            success, response = order_service.process_delivery(user_id, order_id)
+            
+            if not success:
+                logger.error("Error in payment_success: %s", response["message"])
+                return jsonify({"message": "Server error"}), 500
+                        
             return render_template('payment_success.html')
         
         except Exception as e:

@@ -60,7 +60,7 @@ def signup_login_routes(app):
     def signup_submit():
         try:
             user_signup_data = SignupPostModel(
-                request.form["cname"], request.form["u"], request.form["p"]
+                request.form["cname"], request.form["u"], request.form["p"], request.form["email"]
             )
             res = signup_service.create_user(user_signup_data)
 

@@ -1,7 +1,11 @@
 from flask.scaffold import F
 from ecom_api.db.order_db import OrderDB
 from ecom_api.db.product_db import ProductDB
+from ecom_api.db.user_db import UserDB
 from ecom_api.logger import Logger
+from kafka import KafkaProducer
+import json
+
 
 logger = Logger()
 
@@ -9,6 +13,7 @@ class OrderService:
     def __init__(self) -> None:
         self.order_db = OrderDB()
         self.product_db = ProductDB()
+        self.user_db = UserDB()
     
     def create_order(self, order):
         
@@ -36,7 +41,7 @@ class OrderService:
     
     
     
-    def process_paid_orders(self, user_id, order_id):
+    def process_paid_orders_reservations(self, user_id, order_id):
         
         result = self.order_db.process_paid_orders(user_id, order_id)
         
@@ -63,3 +68,15 @@ class OrderService:
         logger.info(f"Order id: {order_id}. Successfully processed order.")
         
         return True,
+    
+    def process_paid_orders_delivery(self, order_id, user_id):
+        producer = KafkaProducer(bootstrap_servers='localhost:9092', value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+        
+        user_data = self.user_db.get_user_by_id(user_id)
+        
+        logger.debug(user_data)
+        
+        email = user_data[7]
+            
+        producer.send('order-delivery', {'order_id': order_id, 'status': 'paid', 'user_id': user_id, 'email': email})
+            

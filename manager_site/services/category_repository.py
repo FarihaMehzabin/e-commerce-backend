@@ -1,6 +1,7 @@
 import time, requests
 from manager_site.services.read_write_lock import ReadWriteLock
 
+
 class CategoryRepository:
     def __init__(self):
         self.categories = []
@@ -17,17 +18,17 @@ class CategoryRepository:
                     self.last_loaded = time.time()
 
                     category_list_response = requests.get(
-                    f"http://127.0.0.1:8080/company/categories"
-                )
-            
+                        f"http://127.0.0.1:8081/company/categories"
+                    )
+
                     category_list = category_list_response.json()
 
                     # Clear the existing categories list.
                     self.categories.clear()
 
-                    for c in category_list['category_list']:
-                        self.categories.append((c['category_id'], c['category_name']))
-    
+                    for c in category_list["category_list"]:
+                        self.categories.append((c["category_id"], c["category_name"]))
+
                     return self.categories
             finally:
                 self.lock.release_write()
@@ -38,5 +39,3 @@ class CategoryRepository:
             finally:
                 self.lock.release_read()
             return category
-        
-    
